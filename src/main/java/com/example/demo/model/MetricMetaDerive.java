@@ -58,7 +58,7 @@ public class MetricMetaDerive extends BaseModel {
             edit = @Edit(
                     title = "计算周期",
                     type = EditType.CHOICE, search = @Search, notNull = true,
-                    choiceType = @ChoiceType(vl = {@VL(value = "0" , label = "不计算"),@VL(value = "1", label = "day"), @VL(value = "2", label = "week"),
+                    choiceType = @ChoiceType(vl = {@VL(value = "0", label = "不计算"), @VL(value = "1", label = "day"), @VL(value = "2", label = "week"),
                             @VL(value = "3", label = "month"), @VL(value = "4", label = "hour")})
             )
     )
@@ -70,7 +70,7 @@ public class MetricMetaDerive extends BaseModel {
             ),
             edit = @Edit(
                     title = "上游的原子指标ID",
-                    type = EditType.CHOICE, search = @Search,notNull = true,
+                    type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
@@ -86,7 +86,7 @@ public class MetricMetaDerive extends BaseModel {
             ),
             edit = @Edit(
                     title = "指标主题",
-                    type = EditType.CHOICE, search = @Search,notNull = true,
+                    type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,domain_zh_name from metric_domain where level_at = 2"
@@ -111,30 +111,17 @@ public class MetricMetaDerive extends BaseModel {
     )
     private String modifier_def;
 
-
     @EruptField(
             views = @View(
-                    title = "业务指标定义"
+                    title = "统计周期"
             ),
             edit = @Edit(
-                    title = "业务指标定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    title = "统计周期",
+                    type = EditType.NUMBER, search = @Search, notNull = true
             )
     )
-    private @Lob String product_def;
+    private String stat_period;
 
-
-    @EruptField(
-            views = @View(
-                    title = "技术指标定义"
-            ),
-            edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR, notNull = true,
-                    codeEditType = @CodeEditorType(language = "sql")
-            )
-    )
-    private @Lob String tec_def;
 
 
 
@@ -155,9 +142,48 @@ public class MetricMetaDerive extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "更新时间",type = ViewType.DATE_TIME
+                    title = "更新时间", type = ViewType.DATE_TIME
             )
     )
     private Date update_time;
 
+    @EruptField(
+            views = @View(
+                    title = "状态"
+            ),
+            edit = @Edit(
+                    title = "状态",
+                    type = EditType.BOOLEAN, search = @Search,
+                    boolType = @BoolType
+            )
+    )
+    private Boolean status;
+
+
+
+    @EruptField(
+            views = @View(
+                    title = "业务指标定义"
+            ),
+            edit = @Edit(
+                    title = "业务指标定义",
+                    type = EditType.TEXTAREA, search = @Search, notNull = true
+            )
+    )
+    private @Lob
+    String product_def;
+
+
+    @EruptField(
+            views = @View(
+                    title = "技术指标定义"
+            ),
+            edit = @Edit(
+                    title = "技术指标定义",
+                    type = EditType.CODE_EDITOR, notNull = true,
+                    codeEditType = @CodeEditorType(language = "sql")
+            )
+    )
+    private @Lob
+    String tec_def;
 }

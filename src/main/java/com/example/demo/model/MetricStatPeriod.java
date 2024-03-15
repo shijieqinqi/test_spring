@@ -21,48 +21,34 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.Date;
 
-@Erupt(name = "修饰词字典")
-@Table(name = "metric_modifiers")
+@Erupt(name = "统计周期元数据表")
+@Table(name = "metric_stat_period")
 @Entity
-public class MetricModifiers extends BaseModel {
+public class MetricStatPeriod extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "修饰词名"
+                    title = "周期标识"
             ),
             edit = @Edit(
-                    title = "修饰词名",
+                    title = "周期标识",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
-    private String modifier_name;
+    private String stat_period_name;
 
     @EruptField(
             views = @View(
-                    title = "修饰词中文名"
+                    title = "周期中文名"
             ),
             edit = @Edit(
-                    title = "修饰词中文名",
+                    title = "周期中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
-    private String modifier_zh_name;
-
-
-    @EruptField(
-            views = @View(
-                    title = "修饰词所属指标id"
-            ),
-            edit = @Edit(
-                    title = "修饰词所属指标id",
-                    type = EditType.INPUT, search = @Search, notNull = true,
-                    inputType = @InputType
-            )
-    )
-    private String modifier_id;
-
+    private String stat_period_zh_name;
 
 
     @EruptField(
@@ -71,7 +57,7 @@ public class MetricModifiers extends BaseModel {
             ),
             edit = @Edit(
                     title = "更新人",
-                    type = EditType.CHOICE, notNull = true,
+                    type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,name from e_upms_user"
@@ -85,30 +71,43 @@ public class MetricModifiers extends BaseModel {
                     title = "更新时间",type = ViewType.DATE_TIME
             )
     )
-    private Date update_time;
+    private Date update_time ;
 
 
     @EruptField(
             views = @View(
-                    title = "业务定义"
+                    title = "业务指标定义(业务口径)"
             ),
             edit = @Edit(
-                    title = "业务定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    title = "业务指标定义(业务口径)",
+                    type = EditType.CODE_EDITOR, search = @Search,
+                    codeEditType = @CodeEditorType(language = "sql")
             )
     )
     private @Lob String product_def;
 
     @EruptField(
             views = @View(
-                    title = "技术指标定义"
+                    title = "ta-技术指标定义"
             ),
             edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR,notNull = true,
+                    title = "ta-技术指标定义",
+                    type = EditType.CODE_EDITOR, search = @Search,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )
-    private @Lob String tec_def;
+    private @Lob String ta_tec_def;
+
+    @EruptField(
+            views = @View(
+                    title = "doris-技术指标定义"
+            ),
+            edit = @Edit(
+                    title = "doris-技术指标定义",
+                    type = EditType.CODE_EDITOR, search = @Search,
+                    codeEditType = @CodeEditorType(language = "sql")
+            )
+    )
+    private @Lob String doris_tec_def;
 }
     

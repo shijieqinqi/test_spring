@@ -84,51 +84,16 @@ public class MetricMetaAtom extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "业务指标定义"
+                    title = "事实表"
             ),
             edit = @Edit(
-                    title = "业务指标定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
-            )
-    )
-    private @Lob String product_def;
-
-
-    @EruptField(
-            views = @View(
-                    title = "技术指标定义"
-            ),
-            edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR, notNull = true,
-                    codeEditType = @CodeEditorType(language = "sql")
-            )
-    )
-    private @Lob String tec_def;
-
-    @EruptField(
-            views = @View(
-                    title = "关联的事件/表"
-            ),
-            edit = @Edit(
-                    title = "关联的事件/表",
+                    title = "事实表",
                     type = EditType.INPUT, search = @Search,
                     inputType = @InputType
             )
     )
-    private String data_tb;
+    private String events;
 
-    @EruptField(
-            views = @View(
-                    title = "关联字段属性"
-            ),
-            edit = @Edit(
-                    title = "关联字段属性",
-                    type = EditType.INPUT, search = @Search,
-                    inputType = @InputType
-            )
-    )
-    private String data_col;
 
     @EruptField(
             views = @View(
@@ -163,5 +128,40 @@ public class MetricMetaAtom extends BaseModel {
             )
     )
     private Date update_time;
+    @EruptField(
+            views = @View(
+                    title = "状态"
+            ),
+            edit = @Edit(
+                    title = "状态",
+                    type = EditType.BOOLEAN, search = @Search,
+                    boolType = @BoolType
+            )
+    )
+    private Boolean status;
+
+    @EruptField(
+            views = @View(
+                    title = "业务指标定义"
+            ),
+            edit = @Edit(
+                    title = "业务指标定义",
+                    type = EditType.TEXTAREA, search = @Search, notNull = true
+            )
+    )
+    private @Lob String product_def;
+
+
+    @EruptField(
+            views = @View(
+                    title = "技术指标定义"
+            ),
+            edit = @Edit(
+                    title = "技术指标定义",
+                    type = EditType.CODE_EDITOR, notNull = true,
+                    codeEditType = @CodeEditorType(language = "sql")
+            )
+    )
+    private @Lob String tec_def;
 
 }

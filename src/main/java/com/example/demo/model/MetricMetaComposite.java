@@ -10,10 +10,7 @@ import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
 import xyz.erupt.annotation.sub_field.ViewType;
-import xyz.erupt.annotation.sub_field.sub_edit.ChoiceType;
-import xyz.erupt.annotation.sub_field.sub_edit.CodeEditorType;
-import xyz.erupt.annotation.sub_field.sub_edit.InputType;
-import xyz.erupt.annotation.sub_field.sub_edit.Search;
+import xyz.erupt.annotation.sub_field.sub_edit.*;
 import xyz.erupt.jpa.model.BaseModel;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
@@ -55,14 +52,13 @@ public class MetricMetaComposite extends BaseModel {
     private String metric_type = "3";
 
 
-
     @EruptField(
             views = @View(
                     title = "指标主题"
             ),
             edit = @Edit(
                     title = "指标主题",
-                    type = EditType.CHOICE, search = @Search,notNull = true,
+                    type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,domain_zh_name from metric_domain where level_at = 2"
@@ -71,43 +67,17 @@ public class MetricMetaComposite extends BaseModel {
     )
     private String metric_theme;
 
-
     @EruptField(
             views = @View(
-                    title = "复合指标计算表达式"
+                    title = "需要的指标"
             ),
             edit = @Edit(
-                    title = "复合指标计算表达式",
-                    type = EditType.INPUT, search = @Search,
-                    inputType = @InputType
+                    title = "需要的指标",
+                    type = EditType.INPUT, search = @Search, notNull = true
             )
+
     )
-    private String cal_expression;
-
-    @EruptField(
-            views = @View(
-                    title = "业务指标定义"
-            ),
-            edit = @Edit(
-                    title = "业务指标定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
-            )
-    )
-    private @Lob String product_def;
-
-
-    @EruptField(
-            views = @View(
-                    title = "技术指标定义"
-            ),
-            edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR,  notNull = true,
-                    codeEditType = @CodeEditorType(language = "sql")
-            )
-    )
-    private @Lob String tec_def;
-
+    private String cal_metric;
 
 
     @EruptField(
@@ -127,9 +97,59 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "更新时间",type = ViewType.DATE_TIME
+                    title = "更新时间", type = ViewType.DATE_TIME
             )
     )
-    private Date update_time ;
+    private Date update_time;
 
+
+    @EruptField(
+            views = @View(
+                    title = "状态"
+            ),
+            edit = @Edit(
+                    title = "状态",
+                    type = EditType.BOOLEAN, search = @Search,
+                    boolType = @BoolType
+            )
+    )
+    private Boolean status;
+
+    @EruptField(
+            views = @View(
+                    title = "复合指标计算表达式"
+            ),
+            edit = @Edit(
+                    title = "复合指标计算表达式",
+                    type = EditType.TEXTAREA, search = @Search, notNull = true
+            )
+
+    )
+    private String cal_expression;
+
+    @EruptField(
+            views = @View(
+                    title = "业务指标定义"
+            ),
+            edit = @Edit(
+                    title = "业务指标定义",
+                    type = EditType.TEXTAREA, search = @Search, notNull = true
+            )
+    )
+    private @Lob
+    String product_def;
+
+
+    @EruptField(
+            views = @View(
+                    title = "技术指标定义"
+            ),
+            edit = @Edit(
+                    title = "技术指标定义",
+                    type = EditType.CODE_EDITOR, notNull = true,
+                    codeEditType = @CodeEditorType(language = "sql")
+            )
+    )
+    private @Lob
+    String tec_def;
 }
