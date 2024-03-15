@@ -117,7 +117,11 @@ public class MetricMetaDerive extends BaseModel {
             ),
             edit = @Edit(
                     title = "统计周期",
-                    type = EditType.NUMBER, search = @Search, notNull = true
+                    type = EditType.CHOICE, search = @Search,
+                    choiceType = @ChoiceType(
+                            fetchHandler = SqlChoiceFetchHandler.class,
+                            fetchHandlerParams = "select id,stat_period_zh_name from metric_stat_period"
+                    )
             )
     )
     private String stat_period;
