@@ -3,28 +3,24 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
+import com.HelloTalk.service.BaseDataProxy;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
-import xyz.erupt.annotation.sub_field.ViewType;
-import xyz.erupt.annotation.sub_field.sub_edit.ChoiceType;
 import xyz.erupt.annotation.sub_field.sub_edit.CodeEditorType;
 import xyz.erupt.annotation.sub_field.sub_edit.InputType;
 import xyz.erupt.annotation.sub_field.sub_edit.Search;
-import xyz.erupt.jpa.model.BaseModel;
-import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.util.Date;
 
-@Erupt(name = "统计周期元数据表")
+@Erupt(name = "统计周期元数据表",dataProxy = BaseDataProxy.class)
 @Table(name = "metric_stat_period")
 @Entity
-public class MetricStatPeriod extends BaseModel {
+public class MetricStatPeriod extends MetaBase {
 
     @EruptField(
             views = @View(
@@ -40,59 +36,34 @@ public class MetricStatPeriod extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "周期中文名"
+                    title = "中文名"
             ),
             edit = @Edit(
-                    title = "周期中文名",
+                    title = "中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
     private String stat_period_zh_name;
 
-
     @EruptField(
             views = @View(
-                    title = "更新人"
+                    title = "业务定义"
             ),
             edit = @Edit(
-                    title = "更新人",
-                    type = EditType.CHOICE, search = @Search, notNull = true,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,name from e_upms_user"
-                    )
-            )
-    )
-    private String updater;
-
-    @EruptField(
-            views = @View(
-                    title = "更新时间",type = ViewType.DATE_TIME
-            )
-    )
-    private Date update_time ;
-
-
-    @EruptField(
-            views = @View(
-                    title = "业务指标定义(业务口径)"
-            ),
-            edit = @Edit(
-                    title = "业务指标定义(业务口径)",
-                    type = EditType.CODE_EDITOR, search = @Search,
-                    codeEditType = @CodeEditorType(language = "sql")
+                    title = "业务定义",
+                    type = EditType.TEXTAREA, search = @Search, notNull = true
             )
     )
     private @Lob String product_def;
 
     @EruptField(
             views = @View(
-                    title = "ta-技术指标定义"
+                    title = "ta技术定义"
             ),
             edit = @Edit(
-                    title = "ta-技术指标定义",
-                    type = EditType.CODE_EDITOR, search = @Search,
+                    title = "ta技术定义",
+                    type = EditType.CODE_EDITOR,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )
@@ -100,11 +71,11 @@ public class MetricStatPeriod extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "doris-技术指标定义"
+                    title = "doris技术定义"
             ),
             edit = @Edit(
-                    title = "doris-技术指标定义",
-                    type = EditType.CODE_EDITOR, search = @Search,
+                    title = "doris技术定义",
+                    type = EditType.CODE_EDITOR,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )

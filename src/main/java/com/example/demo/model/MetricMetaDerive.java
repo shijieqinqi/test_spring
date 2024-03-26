@@ -1,8 +1,9 @@
-package com.example.demo.model;/*
- * Copyright © 2020-2035 erupt.xyz All rights reserved.
- * Author: YuePeng (erupts@126.com)
- */
+package com.example.demo.model;
 
+
+import com.HelloTalk.service.DeriveDataProxy;
+import com.HelloTalk.service.DeriveModifierTagsFetchHandler;
+import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
@@ -11,19 +12,21 @@ import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
 import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.*;
-import xyz.erupt.jpa.model.BaseModel;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
+@Data
 @Erupt(name = "派生指标",
-        filter = @Filter("MetricMetaDerive.metric_type = 2"))
+        filter = @Filter("MetricMetaDerive.metric_type = 2"),
+        dataProxy = DeriveDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
-public class MetricMetaDerive extends BaseModel {
+public class MetricMetaDerive extends MetaBase {
 
     @EruptField(
             views = @View(
@@ -39,10 +42,10 @@ public class MetricMetaDerive extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "指标中文名称"
+                    title = "中文名"
             ),
             edit = @Edit(
-                    title = "指标中文名称",
+                    title = "中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
@@ -62,14 +65,14 @@ public class MetricMetaDerive extends BaseModel {
                             @VL(value = "3", label = "month"), @VL(value = "4", label = "hour")})
             )
     )
-    private String cal_period;
+    private Integer cal_period;
 
     @EruptField(
             views = @View(
-                    title = "上游的原子指标ID"
+                    title = "上游指标"
             ),
             edit = @Edit(
-                    title = "上游的原子指标ID",
+                    title = "上游指标",
                     type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
@@ -93,23 +96,7 @@ public class MetricMetaDerive extends BaseModel {
                     )
             )
     )
-    private String metric_theme;
-
-
-    @EruptField(
-            views = @View(
-                    title = "修饰词"
-            ),
-            edit = @Edit(
-                    title = "修饰词",
-                    type = EditType.CHOICE, search = @Search,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,modifier_name from metric_modifiers"
-                    )
-            )
-    )
-    private String modifier_def;
+    private Integer metric_theme;
 
     @EruptField(
             views = @View(
@@ -117,39 +104,38 @@ public class MetricMetaDerive extends BaseModel {
             ),
             edit = @Edit(
                     title = "统计周期",
-                    type = EditType.CHOICE, search = @Search,
+                    type = EditType.CHOICE, notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,stat_period_zh_name from metric_stat_period"
                     )
             )
     )
-    private String stat_period;
-
-
-
+    private Integer stat_period;
 
     @EruptField(
             views = @View(
-                    title = "更新人"
+                    title = "修饰词id",show = false
             ),
             edit = @Edit(
-                    title = "更新人",
-                    type = EditType.CHOICE, notNull = true,
+                    title = "修饰词id",
+                    type = EditType.CHOICE,show = false,search = @Search,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,name from e_upms_user"
+                            fetchHandlerParams = "select id,id from metric_modifiers order by id "
                     )
             )
     )
-    private String updater;
+    private String modifier_def;
 
     @EruptField(
-            views = @View(
-                    title = "更新时间", type = ViewType.DATE_TIME
-            )
+            views = @View(title = "修饰词描述",desc = "格式(id:修饰名)"),
+            edit = @Edit(title = "修饰词描述", desc = "格式(id:修饰名:所属原子指标名)",
+                        type = EditType.TAGS,
+                        tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class,allowExtension = false))
     )
-    private Date update_time;
+    @Transient
+    private String modifier_def_view;
 
     @EruptField(
             views = @View(
@@ -157,20 +143,18 @@ public class MetricMetaDerive extends BaseModel {
             ),
             edit = @Edit(
                     title = "状态",
-                    type = EditType.BOOLEAN, search = @Search,
+                    type = EditType.BOOLEAN, notNull = true, search = @Search,
                     boolType = @BoolType
             )
     )
     private Boolean status;
 
-
-
     @EruptField(
             views = @View(
-                    title = "业务指标定义"
+                    title = "业务定义"
             ),
             edit = @Edit(
-                    title = "业务指标定义",
+                    title = "业务定义",
                     type = EditType.TEXTAREA, search = @Search, notNull = true
             )
     )
@@ -180,14 +164,21 @@ public class MetricMetaDerive extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "技术指标定义"
+                    title = "技术定义"
             ),
             edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR, notNull = true,
+                    title = "技术定义(需清空才会重新自动生成)",
+                    type = EditType.CODE_EDITOR,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )
     private @Lob
     String tec_def;
+
+    @EruptField(
+            views = @View(
+                    title = "指标最近计算时间",type = ViewType.DATE_TIME
+            )
+    )
+    private Date recent_cal_time ;
 }

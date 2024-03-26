@@ -3,27 +3,26 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
+import com.HelloTalk.service.BaseDataProxy;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
-import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.*;
-import xyz.erupt.jpa.model.BaseModel;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Erupt(name = "原子指标",
-        filter = @Filter("MetricMetaAtom.metric_type = 1"))
+        filter = @Filter("MetricMetaAtom.metric_type = 1")
+        ,dataProxy = BaseDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
-public class MetricMetaAtom extends BaseModel {
+public class MetricMetaAtom extends MetaBase {
 
     @EruptField(
             views = @View(
@@ -39,20 +38,17 @@ public class MetricMetaAtom extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "指标中文名称"
+                    title = "中文名"
             ),
             edit = @Edit(
-                    title = "指标中文名称",
+                    title = "中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
     private String metric_zh_name;
 
-
     private String metric_type = "1";
-
-
 
     @EruptField(
             views = @View(
@@ -81,14 +77,13 @@ public class MetricMetaAtom extends BaseModel {
     )
     private String aggregation_method;
 
-
     @EruptField(
             views = @View(
                     title = "事实表"
             ),
             edit = @Edit(
                     title = "事实表",
-                    type = EditType.INPUT, search = @Search,
+                    type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
@@ -97,37 +92,16 @@ public class MetricMetaAtom extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "关联的数据类型"
+                    title = "数据源"
             ),
             edit = @Edit(
-                    title = "关联的数据类型",
+                    title = "数据源",
                     type = EditType.CHOICE, search = @Search, notNull = true,
                     choiceType = @ChoiceType(vl = {@VL(value = "1", label = "doris"), @VL(value = "2", label = "ta")})
             )
     )
     private String data_type;
 
-    @EruptField(
-            views = @View(
-                    title = "更新人"
-            ),
-            edit = @Edit(
-                    title = "更新人",
-                    type = EditType.CHOICE,  notNull = true,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,name from e_upms_user"
-                    )
-            )
-    )
-    private String updater;
-
-    @EruptField(
-            views = @View(
-                    title = "更新时间",type = ViewType.DATE_TIME
-            )
-    )
-    private Date update_time;
     @EruptField(
             views = @View(
                     title = "状态"
@@ -142,10 +116,10 @@ public class MetricMetaAtom extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "业务指标定义"
+                    title = "业务定义"
             ),
             edit = @Edit(
-                    title = "业务指标定义",
+                    title = "业务定义",
                     type = EditType.TEXTAREA, search = @Search, notNull = true
             )
     )
@@ -154,11 +128,11 @@ public class MetricMetaAtom extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "技术指标定义"
+                    title = "技术定义",show = false
             ),
             edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR, notNull = true,
+                    title = "技术定义",
+                    type = EditType.CODE_EDITOR, show = false,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )

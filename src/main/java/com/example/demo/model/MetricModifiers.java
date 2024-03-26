@@ -3,28 +3,29 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
+import com.HelloTalk.service.ModifierDataProxy;
+import com.HelloTalk.service.ModifierIdTagsFetchHandler;
+import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
-import xyz.erupt.annotation.sub_field.ViewType;
-import xyz.erupt.annotation.sub_field.sub_edit.ChoiceType;
 import xyz.erupt.annotation.sub_field.sub_edit.CodeEditorType;
 import xyz.erupt.annotation.sub_field.sub_edit.InputType;
 import xyz.erupt.annotation.sub_field.sub_edit.Search;
-import xyz.erupt.jpa.model.BaseModel;
-import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
+import xyz.erupt.annotation.sub_field.sub_edit.TagsType;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-import java.util.Date;
+import javax.persistence.Transient;
 
-@Erupt(name = "修饰词字典")
+@Data
+@Erupt(name = "修饰词字典",dataProxy = ModifierDataProxy.class)
 @Table(name = "metric_modifiers")
 @Entity
-public class MetricModifiers extends BaseModel {
+public class MetricModifiers extends MetaBase {
 
     @EruptField(
             views = @View(
@@ -40,53 +41,38 @@ public class MetricModifiers extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "修饰词中文名"
+                    title = "中文名"
             ),
             edit = @Edit(
-                    title = "修饰词中文名",
+                    title = "中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
     )
     private String modifier_zh_name;
 
-
     @EruptField(
             views = @View(
-                    title = "修饰词所属指标id"
+                    title = "修饰的指标id",
+                    show = false
             ),
             edit = @Edit(
-                    title = "修饰词所属指标id",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "修饰的指标id",
+                    type = EditType.INPUT,
+                    show = false,
                     inputType = @InputType
             )
     )
     private String modifier_id;
 
-
-
     @EruptField(
-            views = @View(
-                    title = "更新人"
-            ),
-            edit = @Edit(
-                    title = "更新人",
-                    type = EditType.CHOICE, notNull = true,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,name from e_upms_user"
-                    )
-            )
+            views = @View(title = "修饰的指标",desc = "格式（原子指标id：原子指标中文名）"),
+            edit = @Edit(title = "修饰的指标", type = EditType.TAGS, notNull = true,
+                    desc = "格式（原子指标id：原子指标中文名）", search = @Search,
+                    tagsType = @TagsType(fetchHandler = ModifierIdTagsFetchHandler.class,allowExtension = false))
     )
-    private String updater;
-
-    @EruptField(
-            views = @View(
-                    title = "更新时间",type = ViewType.DATE_TIME
-            )
-    )
-    private Date update_time;
-
+    @Transient
+    private String modifier_id_view;
 
     @EruptField(
             views = @View(
@@ -94,18 +80,18 @@ public class MetricModifiers extends BaseModel {
             ),
             edit = @Edit(
                     title = "业务定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    type = EditType.TEXTAREA, notNull = true
             )
     )
     private @Lob String product_def;
 
     @EruptField(
             views = @View(
-                    title = "技术指标定义"
+                    title = "技术定义"
             ),
             edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR,notNull = true,
+                    title = "技术定义",
+                    type = EditType.CODE_EDITOR,notNull = true,search = @Search,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )

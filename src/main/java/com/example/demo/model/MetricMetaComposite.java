@@ -3,6 +3,9 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
+import com.HelloTalk.service.CompositeDataProxy;
+import com.HelloTalk.service.CompositeTagsFetchHandler;
+import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
@@ -11,19 +14,21 @@ import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
 import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.*;
-import xyz.erupt.jpa.model.BaseModel;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
+@Data
 @Erupt(name = "复合指标",
-        filter = @Filter("MetricMetaComposite.metric_type = 3"))
+        filter = @Filter("MetricMetaComposite.metric_type = 3")
+        ,dataProxy = CompositeDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
-public class MetricMetaComposite extends BaseModel {
+public class MetricMetaComposite extends MetaBase {
 
     @EruptField(
             views = @View(
@@ -39,10 +44,10 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "指标中文名称"
+                    title = "中文名"
             ),
             edit = @Edit(
-                    title = "指标中文名称",
+                    title = "中文名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )
@@ -69,39 +74,16 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "需要的指标"
+                    title = "计算周期"
             ),
             edit = @Edit(
-                    title = "需要的指标",
-                    type = EditType.INPUT, search = @Search, notNull = true
-            )
-
-    )
-    private String cal_metric;
-
-
-    @EruptField(
-            views = @View(
-                    title = "更新人"
-            ),
-            edit = @Edit(
-                    title = "更新人",
-                    type = EditType.CHOICE, notNull = true,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,name from e_upms_user"
-                    )
+                    title = "计算周期",
+                    type = EditType.CHOICE, search = @Search, notNull = true,
+                    choiceType = @ChoiceType(vl = {@VL(value = "0", label = "不计算"), @VL(value = "1", label = "day"), @VL(value = "2", label = "week"),
+                            @VL(value = "3", label = "month"), @VL(value = "4", label = "hour")})
             )
     )
-    private String updater;
-
-    @EruptField(
-            views = @View(
-                    title = "更新时间", type = ViewType.DATE_TIME
-            )
-    )
-    private Date update_time;
-
+    private Integer cal_period;
 
     @EruptField(
             views = @View(
@@ -109,7 +91,7 @@ public class MetricMetaComposite extends BaseModel {
             ),
             edit = @Edit(
                     title = "状态",
-                    type = EditType.BOOLEAN, search = @Search,
+                    type = EditType.BOOLEAN, search = @Search, notNull = true,
                     boolType = @BoolType
             )
     )
@@ -117,11 +99,28 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "复合指标计算表达式"
+                    title = "需要的指标", show = false
+            )
+    )
+    private String cal_metric;
+
+
+    @EruptField(
+            views = @View(title = "需要的指标",desc = "格式(指标id:指标名:中文名)"),
+            edit = @Edit(title = "需要的指标", desc = "格式(指标id:指标名:中文名)",
+                    type = EditType.TAGS, notNull = true, search = @Search(vague = true),
+                    tagsType = @TagsType(fetchHandler = CompositeTagsFetchHandler.class,allowExtension = false))
+    )
+    @Transient
+    private String cal_metric_view;
+
+    @EruptField(
+            views = @View(
+                    title = "计算表达式",desc = "(示例：({0} - {0})/{1} ，{0}代表选中的第一个指标)"
             ),
             edit = @Edit(
-                    title = "复合指标计算表达式",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    title = "计算表达式(示例：({0} - {0})/{1} ，{0}代表选中的第一个指标)",
+                    type = EditType.TEXTAREA, notNull = true
             )
 
     )
@@ -129,11 +128,11 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "业务指标定义"
+                    title = "业务定义"
             ),
             edit = @Edit(
-                    title = "业务指标定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    title = "业务定义",
+                    type = EditType.TEXTAREA, notNull = true
             )
     )
     private @Lob
@@ -142,14 +141,21 @@ public class MetricMetaComposite extends BaseModel {
 
     @EruptField(
             views = @View(
-                    title = "技术指标定义"
+                    title = "技术定义"
             ),
             edit = @Edit(
-                    title = "技术指标定义",
-                    type = EditType.CODE_EDITOR, notNull = true,
+                    title = "技术定义(需清空才会重新自动生成)",
+                    type = EditType.CODE_EDITOR,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )
     private @Lob
     String tec_def;
+
+    @EruptField(
+            views = @View(
+                    title = "指标最近计算时间",type = ViewType.DATE_TIME
+            )
+    )
+    private Date recent_cal_time ;
 }
