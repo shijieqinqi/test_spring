@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.HelloTalk.model.MetaBase;
+import com.example.demo.model.MetaBase;
 import org.springframework.stereotype.Service;
 import xyz.erupt.annotation.fun.DataProxy;
 import xyz.erupt.upms.service.EruptUserService;

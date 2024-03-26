@@ -56,11 +56,6 @@
             <version>${erupt.version}</version>
         </dependency>
         <dependency>
-            <groupId>xyz.erupt</groupId>
-            <artifactId>erupt-monitor</artifactId>
-            <version>${erupt.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

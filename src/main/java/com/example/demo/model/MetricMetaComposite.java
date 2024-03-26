@@ -3,8 +3,9 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
-import com.HelloTalk.service.CompositeDataProxy;
-import com.HelloTalk.service.CompositeTagsFetchHandler;
+
+import com.example.demo.service.CompositeDataProxy;
+import com.example.demo.service.CompositeTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;

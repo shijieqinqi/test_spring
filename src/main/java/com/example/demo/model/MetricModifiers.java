@@ -3,8 +3,9 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
-import com.HelloTalk.service.ModifierDataProxy;
-import com.HelloTalk.service.ModifierIdTagsFetchHandler;
+
+import com.example.demo.service.ModifierDataProxy;
+import com.example.demo.service.ModifierIdTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;

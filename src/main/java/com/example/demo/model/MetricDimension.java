@@ -3,7 +3,7 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
-import com.HelloTalk.service.BaseDataProxy;
+import com.example.demo.service.BaseDataProxy;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_field.Edit;

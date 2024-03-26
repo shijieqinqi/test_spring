@@ -1,8 +1,8 @@
 package com.example.demo.model;
 
 
-import com.HelloTalk.service.RobotDataProxy;
-import com.HelloTalk.service.RobotMetricTagsFetchHandler;
+import com.example.demo.service.RobotDataProxy;
+import com.example.demo.service.RobotMetricTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;

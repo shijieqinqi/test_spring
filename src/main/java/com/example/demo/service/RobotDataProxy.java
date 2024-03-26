@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.HelloTalk.model.RobotReport;
+import com.example.demo.model.RobotReport;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

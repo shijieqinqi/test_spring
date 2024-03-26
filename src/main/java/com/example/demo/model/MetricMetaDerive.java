@@ -1,8 +1,9 @@
 package com.example.demo.model;
 
 
-import com.HelloTalk.service.DeriveDataProxy;
-import com.HelloTalk.service.DeriveModifierTagsFetchHandler;
+
+import com.example.demo.service.DeriveDataProxy;
+import com.example.demo.service.DeriveModifierTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;

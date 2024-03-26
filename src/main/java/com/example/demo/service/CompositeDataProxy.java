@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.HelloTalk.model.MetricMetaComposite;
+import com.example.demo.model.MetricMetaComposite;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
