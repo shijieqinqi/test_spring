@@ -92,7 +92,7 @@ public class MetricModifiers extends MetaBase {
             ),
             edit = @Edit(
                     title = "技术定义",
-                    type = EditType.CODE_EDITOR,notNull = true,search = @Search,
+                    type = EditType.CODE_EDITOR,search = @Search,
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )

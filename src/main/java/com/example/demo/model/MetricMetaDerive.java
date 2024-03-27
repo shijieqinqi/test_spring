@@ -150,6 +150,21 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Boolean status;
 
+
+
+    @EruptField(
+            views = @View(
+                    title = "事件关联"
+            ),
+            edit = @Edit(
+                    title = "事件关联",
+                    type = EditType.CHOICE, search = @Search,
+                    choiceType = @ChoiceType(vl = {@VL(value = "join", label = "join"), @VL(value = "left join", label = "left join"),
+                            @VL(value = "right join", label = "right join"), @VL(value = "full join", label = "full join")})
+            )
+    )
+    private String event_related;
+
     @EruptField(
             views = @View(
                     title = "业务定义"

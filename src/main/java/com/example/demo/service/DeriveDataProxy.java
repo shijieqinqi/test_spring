@@ -53,13 +53,13 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
             if (!upstreamMetricList.isEmpty()) {
                 Map<String, Object> upstreamMetric    = upstreamMetricList.get(0);
-                String              aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName;
-                Object              events            = upstreamMetric.get("events");
+                String              aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName; // count(distinct "#account_id")　corrections
+                Object              events            = upstreamMetric.get("events");//　correction
 
-                int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
+                int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());   //2
 
-                if (dataType == 2) {
-                    events = "'" + events.toString().replace(",", "','") + "'";
+                if (dataType == 2 ) {
+                    events = "'" + events.toString().replace(",", "','") + "'"; //'correction'
                     initSql = new StringBuilder("select %s from v_event_12 where \"$part_event\" in (%s)");
                     initSql = new StringBuilder(String.format(initSql.toString(), aggregationMethod, events));
                     // 统计周期
