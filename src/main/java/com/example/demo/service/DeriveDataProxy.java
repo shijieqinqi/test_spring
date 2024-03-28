@@ -78,6 +78,7 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                     String              aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName; // count(distinct "#account_id")　corrections
                     Object              events            = upstreamMetric.get("events");//　correction
 
+
                     int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());   //2
 
                     if (dataType == 2 ) {
@@ -119,13 +120,15 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                     Map<String, Object> upstreamMetricJoin = upstreamMetricJoinList.get(0);
                     Object              events            = upstreamMetric.get("events");
                     Object              eventsJoin        = upstreamMetricJoin.get("events");
+                    Object availableDimensions = upstreamMetric.get("available_dimensions");
+                    Object availableDimensionsJoin = upstreamMetricJoin.get("available_dimensions");
                     int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
 
                     if (dataType == 2 ) {
                         // 左表
                         events = "'" + events.toString().replace(",", "','") + "'";
-                        initSql = new StringBuilder("(select * from v_event_12 where \"$part_event\" in (%s)");
-                        initSql = new StringBuilder(String.format(initSql.toString(), events));
+                        initSql = new StringBuilder("select %s from v_event_12 where \"$part_event\" in (%s)");
+                        initSql = new StringBuilder(String.format(initSql.toString(), availableDimensions,events));
                         List<Map<String, Object>> statPeriodList = eruptDao.getJdbcTemplate()
                                 .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period()));
                         String statPeriod = "";
@@ -144,8 +147,8 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                         StringBuilder initSqlJoin = new StringBuilder();
                         // 右表
                         if  (eventsJoin.equals("v_user_12") || eventsJoin.equals("user_result_cluster_12")){
-                            initSqlJoin.append("select * from %s");
-                            initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), eventsJoin));
+                            initSqlJoin.append("select %s from %s");
+                            initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), availableDimensionsJoin, eventsJoin));
                         }else{
                             eventsJoin = "'" + eventsJoin.toString().replace(",", "','") + "'";
                             initSqlJoin.append("select * from v_event_12 where \"$part_event\" in (%s)");
@@ -201,7 +204,7 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                             i++;
                             resultSql.append(s).append(" ");
                         }
-                        resultSql.append(" from ").append(initSql);
+                        resultSql.append(" from (").append(initSql);
                         metric.setTec_def(resultSql.toString());
                     }
 

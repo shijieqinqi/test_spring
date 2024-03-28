@@ -65,6 +65,21 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Integer cal_period;
+
+    @EruptField(
+            views = @View(
+                    title = "指标主题"
+            ),
+            edit = @Edit(
+                    title = "指标主题",
+                    type = EditType.CHOICE, search = @Search, notNull = true,
+                    choiceType = @ChoiceType(
+                            fetchHandler = SqlChoiceFetchHandler.class,
+                            fetchHandlerParams = "select id,domain_zh_name from metric_domain where level_at = 2"
+                    )
+            )
+    )
+    private Integer metric_theme;
     @EruptField(
             views = @View(
                     title = "状态"
@@ -126,22 +141,6 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Integer upstream_metric;
 
-    @EruptField(
-            views = @View(
-                    title = "指标主题"
-            ),
-            edit = @Edit(
-                    title = "指标主题",
-                    type = EditType.CHOICE, search = @Search, notNull = true,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,domain_zh_name from metric_domain where level_at = 2"
-                    )
-            )
-    )
-    private Integer metric_theme;
-
-
 
 
     @EruptField(
@@ -158,7 +157,17 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Integer stat_period;
-
+    @EruptField(
+            views = @View(
+                    title = "关联条件字段"
+            ),
+            edit = @Edit(
+                    title = "关联条件字段",
+                    type = EditType.INPUT,
+                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
+            )
+    )
+    private String join_condition_1;
     @EruptField(
             views = @View(
                     title = "修饰词id", show = false
@@ -183,17 +192,7 @@ public class MetricMetaDerive extends MetaBase {
     @Transient
     private String modifier_def_view;
 
-    @EruptField(
-            views = @View(
-                    title = "关联条件字段"
-            ),
-            edit = @Edit(
-                    title = "关联条件字段",
-                    type = EditType.INPUT,
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private String join_condition_1;
+
 
 
 
@@ -220,21 +219,6 @@ public class MetricMetaDerive extends MetaBase {
     private Integer upstream_metric_join;
 
 
-    @EruptField(
-            views = @View(
-                    title = "右表指标主题"
-            ),
-            edit = @Edit(
-                    title = "右表指标主题",
-                    type = EditType.CHOICE, search = @Search,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,domain_zh_name from metric_domain where level_at = 2"
-                    )
-                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private Integer metric_theme_join;
 
     @EruptField(
             views = @View(

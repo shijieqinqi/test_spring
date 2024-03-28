@@ -71,11 +71,23 @@ public class MetricMetaAtom extends MetaBase {
             ),
             edit = @Edit(
                     title = "聚合方法",
-                    type = EditType.INPUT, search = @Search,notNull = true,
+                    type = EditType.INPUT, search = @Search,
                     inputType = @InputType
             )
     )
     private String aggregation_method;
+
+    @EruptField(
+            views = @View(
+                    title = "可用维度"
+            ),
+            edit = @Edit(
+                    title = "可用维度",
+                    type = EditType.INPUT, search = @Search,
+                    inputType = @InputType
+            )
+    )
+    private String available_dimensions;
 
     @EruptField(
             views = @View(
