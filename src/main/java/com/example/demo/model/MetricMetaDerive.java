@@ -120,7 +120,7 @@ public class MetricMetaDerive extends MetaBase {
     )
     private String event_related;
 
-    @Transient //由于该字段不需要持久化，所以使用该注解修饰
+    @Transient
     @EruptField(
             edit = @Edit(title = "表配置", type = EditType.DIVIDE)
     )
@@ -157,6 +157,9 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Integer stat_period;
+
+
+    @Transient
     @EruptField(
             views = @View(
                     title = "关联条件字段"
@@ -168,6 +171,7 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private String join_condition_1;
+
     @EruptField(
             views = @View(
                     title = "修饰词id", show = false
@@ -202,6 +206,9 @@ public class MetricMetaDerive extends MetaBase {
                     showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1"))
     )
     private String divide2;
+
+
+    @Transient
     @EruptField(
             views = @View(
                     title = "右表上游指标"
@@ -219,7 +226,7 @@ public class MetricMetaDerive extends MetaBase {
     private Integer upstream_metric_join;
 
 
-
+    @Transient
     @EruptField(
             views = @View(
                     title = "右表统计周期"
@@ -236,6 +243,7 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Integer stat_period_join;
 
+    @Transient
     @EruptField(
             views = @View(
                     title = "右表关联条件字段"
@@ -247,6 +255,9 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private String join_condition_2;
+
+
+    @Transient
     @EruptField(
             views = @View(
                     title = "右表修饰词id", show = false
@@ -273,7 +284,7 @@ public class MetricMetaDerive extends MetaBase {
     @Transient
     private String modifier_def_view_join;
 
-
+    @Transient
     @EruptField(
             views = @View(
                     title = "关联修饰词id", show = false
@@ -334,4 +345,18 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Date recent_cal_time;
+
+    @EruptField(
+            views = @View(
+                    title = "关联表配置"
+            ),
+            edit = @Edit(
+                    title = "关联表配置",
+                    type = EditType.CODE_EDITOR,
+                    codeEditType = @CodeEditorType(language = "sql")
+            )
+    )
+    private @Lob
+    String join_table_config;
+
 }

@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import com.example.demo.model.MetricMetaDerive;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +42,6 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             metric.setModifier_def(StringUtils.join(idArr, ","));
         }
 
-        String tecDef = metric.getTec_def();
-
         String modifierDefViewJoin = metric.getModifier_def_view_join();
         if (StringUtils.isNotBlank(modifierDefViewJoin)) {
             String[] idArr = Arrays.stream(modifierDefViewJoin.split("\\|"))
@@ -56,6 +57,20 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                     .toArray(String[]::new);
             metric.setJoin_modifier_def(StringUtils.join(idArr, ","));
         }
+
+
+        JSONObject joinTableConfig = new JSONObject();
+        joinTableConfig.put("join_condition_1", metric.getJoin_condition_1());
+        joinTableConfig.put("upstream_metric_join", metric.getUpstream_metric_join());
+        joinTableConfig.put("stat_period_join", metric.getStat_period_join());
+        joinTableConfig.put("join_condition_2", metric.getJoin_condition_2());
+        joinTableConfig.put("modifier_def_join", metric.getModifier_def_join());
+        metric.setJoin_table_config(joinTableConfig.toJSONString());
+
+
+
+
+        String tecDef = metric.getTec_def();
 
         if (StringUtils.isBlank(tecDef)) {
             // 派生指标生成sql
@@ -250,10 +265,28 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
         String  modifierDef    = metric.getModifier_def();
         Integer upstreamMetric = metric.getUpstream_metric();
         metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric,true));
+
+        String joinTableConfig = metric.getJoin_table_config();
+        JSONObject joinTable = JSONObject.parseObject(joinTableConfig);
+        //todo
+        if (joinTable != null) {
+            String join_condition_1 = joinTable.getString("join_condition_1");
+            Integer upstream_metric_join = joinTable.getInteger("upstream_metric_join");
+            Integer stat_period_join = joinTable.getInteger("stat_period_join");
+            String join_condition_2 = joinTable.getString("join_condition_2");
+            String modifier_def_join = joinTable.getString("modifier_def_join");
+
+            metric.setJoin_condition_1(join_condition_1);
+            metric.setJoin_condition_2(join_condition_2);
+            metric.setStat_period_join(stat_period_join);
+            metric.setUpstream_metric_join(upstream_metric_join);
+            metric.setModifier_def_join(modifier_def_join);
+        }
     }
 
     @Override
     public void beforeUpdate(MetricMetaDerive metric) {
+
         beforeAdd(metric);
     }
 
