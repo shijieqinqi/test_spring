@@ -60,11 +60,13 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
 
         JSONObject joinTableConfig = new JSONObject();
-        joinTableConfig.put("join_condition_1", metric.getJoin_condition_1());
-        joinTableConfig.put("upstream_metric_join", metric.getUpstream_metric_join());
-        joinTableConfig.put("stat_period_join", metric.getStat_period_join());
-        joinTableConfig.put("join_condition_2", metric.getJoin_condition_2());
-        joinTableConfig.put("modifier_def_join", metric.getModifier_def_join());
+        joinTableConfig.put("event_upstream_metric", metric.getEvent_upstream_metric());// 关联上游指标
+        joinTableConfig.put("join_condition_1", metric.getJoin_condition_1());// 关联条件字段1
+        joinTableConfig.put("upstream_metric_join", metric.getUpstream_metric_join());// 右表上游指标
+        joinTableConfig.put("stat_period_join", metric.getStat_period_join());// 右表统计周期
+        joinTableConfig.put("join_condition_2", metric.getJoin_condition_2());// 关联条件字段2
+        joinTableConfig.put("modifier_def_join", metric.getModifier_def_join());// 右表修饰id
+        joinTableConfig.put("join_modifier_def", metric.getJoin_modifier_def());// 关联修饰词id
         metric.setJoin_table_config(joinTableConfig.toJSONString());
 
 
@@ -126,15 +128,23 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             }else{
                 Integer upstreamMetricId = metric.getUpstream_metric();
                 Integer upstreamMetricJoinId = metric.getUpstream_metric_join();
+                Integer event_upstream_metric = metric.getEvent_upstream_metric();
+
                 List<Map<String, Object>> upstreamMetricList = eruptDao.getJdbcTemplate()
                         .queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricId));
                 List<Map<String, Object>> upstreamMetricJoinList = eruptDao.getJdbcTemplate().queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricJoinId));
+                List<Map<String, Object>> eventUpStreamList = eruptDao.getJdbcTemplate().queryForList(String.format("select * from metric_meta where id = '%s'", event_upstream_metric));
 
-                if (!upstreamMetricList.isEmpty() && !upstreamMetricJoinList.isEmpty()) {
+
+                if (!upstreamMetricList.isEmpty() && !upstreamMetricJoinList.isEmpty()&& !eventUpStreamList.isEmpty()) {
                     Map<String, Object> upstreamMetric = upstreamMetricList.get(0);
                     Map<String, Object> upstreamMetricJoin = upstreamMetricJoinList.get(0);
+                    Map<String, Object> eventUpMetric = eventUpStreamList.get(0);
+                    String aggregationMethod = eventUpMetric.get("aggregation_method") + " " + metricName;
                     Object              events            = upstreamMetric.get("events");
                     Object              eventsJoin        = upstreamMetricJoin.get("events");
+
+
                     Object availableDimensions = upstreamMetric.get("available_dimensions");
                     Object availableDimensionsJoin = upstreamMetricJoin.get("available_dimensions");
                     int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
@@ -159,19 +169,23 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                                 }
                             }
                         }
-                        StringBuilder initSqlJoin = new StringBuilder();
+
                         // 右表
+                        StringBuilder initSqlJoin = new StringBuilder();
+                        List<Map<String, Object>> statPeriodListJoin = eruptDao.getJdbcTemplate()
+                                .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period_join()));
+                        String statPeriodJoin = "";
+
                         if  (eventsJoin.equals("v_user_12") || eventsJoin.equals("user_result_cluster_12")){
                             initSqlJoin.append("select %s from %s");
                             initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), availableDimensionsJoin, eventsJoin));
+
                         }else{
                             eventsJoin = "'" + eventsJoin.toString().replace(",", "','") + "'";
                             initSqlJoin.append("select * from v_event_12 where \"$part_event\" in (%s)");
                             initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), eventsJoin));
                         }
-                        List<Map<String, Object>> statPeriodListJoin = eruptDao.getJdbcTemplate()
-                                .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period_join()));
-                        String statPeriodJoin = "";
+
                         if(!statPeriodListJoin.isEmpty()){
                             statPeriodJoin = statPeriodListJoin.get(0).get("ta_tec_def").toString();
                             initSqlJoin.append(" and ").append(statPeriodJoin);
@@ -181,6 +195,9 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                                     .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifier_def_join));
                             if (!modifierDefListJoin.isEmpty()) {
                                 for (Map<String, Object> modify : modifierDefListJoin) {
+                                    if (eventsJoin.equals("v_user_12") || eventsJoin.equals("user_result_cluster_12")){
+                                        initSqlJoin.append(" where ").append(modify.get("tec_def"));
+                                    }
                                     initSqlJoin.append(" and ").append(modify.get("tec_def"));
                                 }
                             }
@@ -208,12 +225,11 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                         }
                         System.out.println(initSql.toString());
                         StringBuilder resultSql = new StringBuilder();
-                        String              aggregationMethod = upstreamMetric.get("aggregation_method").toString();
                         String[] strings = aggregationMethod.split(" ");
                         int i = 0;
                         resultSql.append("select ");
                         for (String s : strings) {
-                            if(i == strings.length-1){
+                            if(i == strings.length-2){
                                 s = "t1." + s;
                             }
                             i++;
@@ -262,26 +278,32 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
     @Override
     public void editBehavior(MetricMetaDerive metric) {
+
+
+
         String  modifierDef    = metric.getModifier_def();
         Integer upstreamMetric = metric.getUpstream_metric();
         metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric,true));
 
         String joinTableConfig = metric.getJoin_table_config();
         JSONObject joinTable = JSONObject.parseObject(joinTableConfig);
-        //todo
-        if (joinTable != null) {
-            String join_condition_1 = joinTable.getString("join_condition_1");
-            Integer upstream_metric_join = joinTable.getInteger("upstream_metric_join");
-            Integer stat_period_join = joinTable.getInteger("stat_period_join");
-            String join_condition_2 = joinTable.getString("join_condition_2");
-            String modifier_def_join = joinTable.getString("modifier_def_join");
+        String  modifierDefJoin = joinTable.getString("modifier_def_join");
+        Integer upstreamMetricJoin = joinTable.getInteger("upstream_metric_join");
+        metric.setModifier_def_view_join(getModifierView(modifierDefJoin, upstreamMetricJoin,true));
 
-            metric.setJoin_condition_1(join_condition_1);
-            metric.setJoin_condition_2(join_condition_2);
-            metric.setStat_period_join(stat_period_join);
-            metric.setUpstream_metric_join(upstream_metric_join);
-            metric.setModifier_def_join(modifier_def_join);
-        }
+        String  joinModifierDef = joinTable.getString("join_modifier_def");
+        Integer eventUpstreamMetric = joinTable.getInteger("event_upstream_metric");
+        metric.setJoin_modifier_def_view(getModifierView(joinModifierDef, eventUpstreamMetric,true));
+
+        metric.setEvent_upstream_metric(eventUpstreamMetric);
+        metric.setJoin_condition_1(joinTable.getString("join_condition_1"));
+        metric.setUpstream_metric_join(upstreamMetricJoin);
+        metric.setStat_period_join(joinTable.getInteger("stat_period_join"));
+        metric.setJoin_condition_2(joinTable.getString("join_condition_2"));
+        metric.setModifier_def_join(modifierDefJoin);
+        metric.setJoin_modifier_def(joinModifierDef);
+
+
     }
 
     @Override

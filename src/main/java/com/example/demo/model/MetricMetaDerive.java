@@ -120,6 +120,22 @@ public class MetricMetaDerive extends MetaBase {
     )
     private String event_related;
 
+
+    @Transient
+    @EruptField(
+            edit = @Edit(
+                    title = "关联上游指标",
+                    type = EditType.CHOICE,
+                    choiceType = @ChoiceType(
+                            fetchHandler = SqlChoiceFetchHandler.class,
+                            fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
+                    )
+                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
+            )
+    )
+    private Integer event_upstream_metric;
+
+
     @Transient
     @EruptField(
             edit = @Edit(title = "表配置", type = EditType.DIVIDE)
@@ -161,9 +177,6 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "关联条件字段"
-            ),
             edit = @Edit(
                     title = "关联条件字段",
                     type = EditType.INPUT,
@@ -210,12 +223,9 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "右表上游指标"
-            ),
             edit = @Edit(
                     title = "右表上游指标",
-                    type = EditType.CHOICE, search = @Search,
+                    type = EditType.CHOICE,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
@@ -228,9 +238,6 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "右表统计周期"
-            ),
             edit = @Edit(
                     title = "右表统计周期",
                     type = EditType.CHOICE,
@@ -245,9 +252,6 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "右表关联条件字段"
-            ),
             edit = @Edit(
                     title = "右表关联条件字段",
                     type = EditType.INPUT,
@@ -259,12 +263,9 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "右表修饰词id", show = false
-            ),
             edit = @Edit(
                     title = "右表修饰词id",
-                    type = EditType.CHOICE, show = false, search = @Search,
+                    type = EditType.CHOICE, show = false,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,id from metric_modifiers order by id "
@@ -274,7 +275,6 @@ public class MetricMetaDerive extends MetaBase {
     private String modifier_def_join;
 
     @EruptField(
-            views = @View(title = "右表修饰词描述", desc = "格式(id:修饰名)"),
             edit = @Edit(title = "右表修饰词描述", desc = "格式(id:修饰名:所属原子指标名)",
                     type = EditType.TAGS,
                     tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
@@ -286,9 +286,6 @@ public class MetricMetaDerive extends MetaBase {
 
     @Transient
     @EruptField(
-            views = @View(
-                    title = "关联修饰词id", show = false
-            ),
             edit = @Edit(
                     title = "关联修饰词id",
                     type = EditType.CHOICE, show = false, search = @Search,
@@ -302,7 +299,6 @@ public class MetricMetaDerive extends MetaBase {
 
 
     @EruptField(
-            views = @View(title = "关联修饰词", desc = "格式(id:修饰名)"),
             edit = @Edit(title = "关联修饰词", desc = "格式(id:修饰名:所属原子指标名)",
                     type = EditType.TAGS,
                     tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
@@ -352,8 +348,7 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "关联表配置",
-                    type = EditType.CODE_EDITOR,
-                    codeEditType = @CodeEditorType(language = "sql")
+                    type = EditType.TEXTAREA
             )
     )
     private @Lob
