@@ -1,12 +1,14 @@
 package com.example.demo.model;
 
 
+import com.example.demo.service.BatchInitTecDefHandlerImpl;
 import com.example.demo.service.DeriveDataProxy;
 import com.example.demo.service.DeriveModifierTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
+import xyz.erupt.annotation.sub_erupt.RowOperation;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
@@ -23,6 +25,12 @@ import java.util.Date;
 @Data
 @Erupt(name = "派生指标",
         filter = @Filter("MetricMetaDerive.metric_type = 2"),
+        rowOperation = {
+                @RowOperation(
+                        title = "批量重新生成sql",
+                        tip = "请确认选中数据无自定义sql",
+                        mode = RowOperation.Mode.MULTI,
+                        operationHandler = BatchInitTecDefHandlerImpl.class)},
         dataProxy = DeriveDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
@@ -348,7 +356,8 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "关联表配置",
-                    type = EditType.TEXTAREA
+                    type = EditType.CODE_EDITOR,
+                    codeEditType = @CodeEditorType(language = "json")
             )
     )
     private @Lob
