@@ -11,7 +11,6 @@ import xyz.erupt.upms.service.EruptUserService;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author IAN
@@ -69,7 +68,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
         result.forEach(map -> {
             if (map.containsKey("metrics") && map.get("metrics") != null) {
                 String metricIds = map.get("metrics").toString();
-                String metricIdsView   = getMetricIdsView(metricIds);
+                String metricIdsView   = getMetricIdsView(metricIds,false);
                 map.put("metrics_view", metricIdsView);
             }
         });
@@ -78,7 +77,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
     @Override
     public void editBehavior(RobotReport metric) {
         String metricIds = metric.getMetrics();
-        metric.setMetrics_view(getMetricIdsView(metricIds));
+        metric.setMetrics_view(getMetricIdsView(metricIds,true));
     }
 
     @Override
@@ -86,17 +85,33 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
         beforeAdd(metric);
     }
 
-    private String getMetricIdsView(String modifierIds) {
-        if (StringUtils.isNotBlank(modifierIds)) {
+    private String getMetricIdsView(String metricIds, boolean showNewline) {
+        if (StringUtils.isNotBlank(metricIds)) {
             String sql = "select id, metric_zh_name from metric_meta \n" +
                     "where id in (%s)";
 
             List<Map<String, Object>> maps = eruptDao.getJdbcTemplate()
-                    .queryForList(String.format(sql, modifierIds));
+                    .queryForList(String.format(sql, metricIds));
 
-            return maps.stream()
-                    .map(s -> Joiner.on(":").join(s.get("id").toString(), s.get("metric_zh_name")))
-                    .collect(Collectors.joining("|"));
+            HashMap<String, String> hashMap = new HashMap<>();
+            for (Map<String, Object> s : maps) {
+                hashMap.put(s.get("id").toString(), Joiner.on(":").join(s.get("id"), s.get("metric_zh_name")));
+            }
+
+            ArrayList<Object> resultList = new ArrayList<>();
+            int i = 1;
+            for (String metric : metricIds.split(",")) {
+                if ("-1".equals(metric)) {
+                    if (showNewline) {
+                        resultList.add("-1:换行"+i);
+                        i++;
+                    }
+                } else {
+                    resultList.add(hashMap.get(metric));
+                }
+            }
+            return Joiner.on("|").join(resultList);
+
         }
         return null;
     }

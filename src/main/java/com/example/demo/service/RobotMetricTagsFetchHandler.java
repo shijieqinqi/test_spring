@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import xyz.erupt.annotation.fun.TagsFetchHandler;
 import xyz.erupt.jpa.dao.EruptDao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +30,13 @@ public class RobotMetricTagsFetchHandler implements TagsFetchHandler {
 
         List<Map<String, Object>> list = eruptDao.getJdbcTemplate()
                 .queryForList(sql);
+        for (int i = 1;i<10 ;i++ ){
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("id","-1");
+            map.put("metric_zh_name","换行" + i);
+            list.add(map);
+        }
+
         return list.stream()
                 .map(s -> Joiner.on(":").join(s.get("id"), s.get("metric_zh_name")))
                 .collect(Collectors.toList());

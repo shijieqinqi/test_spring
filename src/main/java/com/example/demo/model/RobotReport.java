@@ -61,6 +61,30 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
+                    title = "报表url"
+            ),
+            edit = @Edit(
+                    title = "报表url",
+                    type = EditType.INPUT, search = @Search,
+                    inputType = @InputType
+            )
+    )
+    private String dashboard_url;
+
+    @EruptField(
+            views = @View(
+                    title = "开启推送"
+            ),
+            edit = @Edit(
+                    title = "开启推送",
+                    type = EditType.BOOLEAN, notNull = true, search = @Search,
+                    boolType = @BoolType
+            )
+    )
+    private Boolean status;
+
+    @EruptField(
+            views = @View(
                     title = "推送指标",show = false
             )
     )
@@ -75,15 +99,4 @@ public class RobotReport extends MetaBase {
     @Transient
     private String metrics_view;
 
-    @EruptField(
-            views = @View(
-                    title = "开启推送"
-            ),
-            edit = @Edit(
-                    title = "开启推送",
-                    type = EditType.BOOLEAN, notNull = true, search = @Search,
-                    boolType = @BoolType
-            )
-    )
-    private Boolean status;
 }

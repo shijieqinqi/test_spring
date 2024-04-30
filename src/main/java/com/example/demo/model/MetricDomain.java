@@ -77,4 +77,3 @@ public class MetricDomain extends MetaBase {
     private Integer parent_id;
 
 }
-    

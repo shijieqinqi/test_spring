@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import xyz.erupt.annotation.EruptField;
-import xyz.erupt.annotation.sub_field.Edit;
-import xyz.erupt.annotation.sub_field.EditType;
-import xyz.erupt.annotation.sub_field.View;
-import xyz.erupt.annotation.sub_field.ViewType;
+import xyz.erupt.annotation.sub_field.*;
 import xyz.erupt.annotation.sub_field.sub_edit.ChoiceType;
+import xyz.erupt.annotation.sub_field.sub_edit.Search;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Column;
@@ -32,6 +30,11 @@ public class MetaBase {
     @EruptField(
             views = @View(
                     title = "id"
+            ),
+            edit = @Edit(
+                    title = "id",
+                    search = @Search,
+                    readonly=@Readonly(add = true,edit = true)
             )
     )
     private Long id;

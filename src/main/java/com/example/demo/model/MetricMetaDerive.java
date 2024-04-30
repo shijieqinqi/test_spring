@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 
 import com.example.demo.service.BatchInitTecDefHandlerImpl;
+import com.example.demo.service.DeriveDataCopyHandlerImpl;
 import com.example.demo.service.DeriveDataProxy;
 import com.example.demo.service.DeriveModifierTagsFetchHandler;
 import lombok.Data;
@@ -26,6 +27,11 @@ import java.util.Date;
 @Erupt(name = "派生指标",
         filter = @Filter("MetricMetaDerive.metric_type = 2"),
         rowOperation = {
+                @RowOperation(
+                        title = "复制",
+                        icon = "fa fa-clone",
+                        mode = RowOperation.Mode.SINGLE,
+                        operationHandler = DeriveDataCopyHandlerImpl.class),
                 @RowOperation(
                         title = "批量重新生成sql",
                         tip = "请确认选中数据无自定义sql",
@@ -128,22 +134,6 @@ public class MetricMetaDerive extends MetaBase {
     )
     private String event_related;
 
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "关联上游指标",
-                    type = EditType.CHOICE,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
-                    )
-                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private Integer event_upstream_metric;
-
-
     @Transient
     @EruptField(
             edit = @Edit(title = "表配置", type = EditType.DIVIDE)
@@ -173,7 +163,7 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "统计周期",
-                    type = EditType.CHOICE, notNull = true,
+                    type = EditType.CHOICE,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,stat_period_zh_name from metric_stat_period"
@@ -308,7 +298,7 @@ public class MetricMetaDerive extends MetaBase {
 
     @EruptField(
             edit = @Edit(title = "关联修饰词", desc = "格式(id:修饰名:所属原子指标名)",
-                    type = EditType.TAGS,
+                    type = EditType.TAGS,show = false,
                     tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
                     showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1"))
     )
@@ -357,7 +347,8 @@ public class MetricMetaDerive extends MetaBase {
             edit = @Edit(
                     title = "关联表配置",
                     type = EditType.CODE_EDITOR,
-                    codeEditType = @CodeEditorType(language = "json")
+                    codeEditType = @CodeEditorType(language = "json"),
+                    show = false
             )
     )
     private @Lob

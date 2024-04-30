@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.example.demo.model.MetricMetaDerive;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
     @Resource
-    private EruptDao         eruptDao;
+    private EruptDao eruptDao;
     @Resource
     private EruptUserService eruptUserService;
 
@@ -58,208 +56,166 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             metric.setJoin_modifier_def(StringUtils.join(idArr, ","));
         }
 
-
-        JSONObject joinTableConfig = new JSONObject();
-        joinTableConfig.put("event_upstream_metric", metric.getEvent_upstream_metric());
-        joinTableConfig.put("join_condition_1", metric.getJoin_condition_1());
-        joinTableConfig.put("upstream_metric_join", metric.getUpstream_metric_join());
-        joinTableConfig.put("stat_period_join", metric.getStat_period_join());
-        joinTableConfig.put("join_condition_2", metric.getJoin_condition_2());
-        joinTableConfig.put("modifier_def_join", metric.getModifier_def_join());
-        joinTableConfig.put("join_modifier_def", metric.getJoin_modifier_def());
-        metric.setJoin_table_config(joinTableConfig.toJSONString());
-
+        JSONObject joinTableConfigJson = new JSONObject();
+        joinTableConfigJson.put("join_condition_1", metric.getJoin_condition_1());
+        joinTableConfigJson.put("upstream_metric_join", metric.getUpstream_metric_join());
+        joinTableConfigJson.put("stat_period_join", metric.getStat_period_join());
+        joinTableConfigJson.put("join_condition_2", metric.getJoin_condition_2());
+        joinTableConfigJson.put("modifier_def_join", metric.getModifier_def_join());
+        joinTableConfigJson.put("join_modifier_def", metric.getJoin_modifier_def());
+        metric.setJoin_table_config(joinTableConfigJson.toJSONString());
 
         String tecDef = metric.getTec_def();
 
         if (StringUtils.isBlank(tecDef)) {
             // 派生指标生成sql
-            String        metricName   = metric.getMetric_name();
-            String        modifier_def = metric.getModifier_def();
-            String        modifier_def_join = metric.getModifier_def_join();
-            Boolean       is_event_related = metric.getIs_event_related();
+            String metricName = metric.getMetric_name();
+            String modifier_def = metric.getModifier_def();
+            String modifier_def_join = metric.getModifier_def_join();
+            Boolean is_event_related = metric.getIs_event_related();
 
-            StringBuilder initSql      = new StringBuilder();
+            StringBuilder initSql = new StringBuilder();
+            Integer upstreamMetricId = metric.getUpstream_metric();
+            Integer upstreamMetricJoinId = metric.getUpstream_metric_join();
 
-            // 无join
-            if (!is_event_related){
-                // 依赖指标
-                Integer upstreamMetricId = metric.getUpstream_metric();
-                List<Map<String, Object>> upstreamMetricList = eruptDao.getJdbcTemplate()
-                        .queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricId));
+            List<Map<String, Object>> upstreamMetricList = eruptDao.getJdbcTemplate()
+                    .queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricId));
+            List<Map<String, Object>> upstreamMetricJoinList = eruptDao.getJdbcTemplate().queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricJoinId));
 
-                if (!upstreamMetricList.isEmpty()) {
-                    Map<String, Object> upstreamMetric    = upstreamMetricList.get(0);
-                    String              aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName; // count(distinct "#account_id")　corrections
-                    Object              events            = upstreamMetric.get("events");//　correction
+            if (!upstreamMetricList.isEmpty()) {
+                List<Map<String, Object>> statPeriodList = eruptDao.getJdbcTemplate()
+                        .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period()));
+                Map<String, Object> upstreamMetric = upstreamMetricList.get(0);
+                String aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName;
+                Object events = upstreamMetric.get("events");
+                Object availableDimensions = upstreamMetric.get("available_dimensions");
+                Object projectName = upstreamMetric.get("project_name");
+                int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
+                Object aggFunc = is_event_related?availableDimensions:aggregationMethod;
+                //ta
+                if (dataType == 2) {
+                    // 左表
+                    projectName = projectName == null ? "v_event_12" : projectName;
+                    events = "'" + events.toString().replace(",", "','") + "'";
+                    initSql = new StringBuilder(String.format("select %s from %s where \"$part_event\" in (%s)", aggFunc, projectName, events));
 
+                    String statPeriod = "";
+                    statPeriod = statPeriodList.get(0).get("ta_tec_def").toString();
+                    initSql.append(" and ").append(statPeriod);
+                    if (modifier_def != null) {
+                        List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
+                                .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifier_def));
 
-                    int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());   //2
-
-                    if (dataType == 2 ) {
-                        events = "'" + events.toString().replace(",", "','") + "'"; //'correction'
-                        initSql = new StringBuilder("select %s from v_event_12 where \"$part_event\" in (%s)");
-                        initSql = new StringBuilder(String.format(initSql.toString(), aggregationMethod, events));
-                        // 统计周期
-                        List<Map<String, Object>> statPeriodList = eruptDao.getJdbcTemplate()
-                                .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period()));
-                        String statPeriod = "";
-                        statPeriod = statPeriodList.get(0).get("ta_tec_def").toString();
-                        initSql.append(" and ").append(statPeriod);
-
-                        if (modifier_def != null) {
-                            List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
-                                    .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifier_def));
-
-                            if (!modifierDefList.isEmpty()) {
-                                for (Map<String, Object> modify : modifierDefList) {
-                                    initSql.append(" and ").append(modify.get("tec_def"));
-                                }
+                        if (!modifierDefList.isEmpty()) {
+                            for (Map<String, Object> modify : modifierDefList) {
+                                initSql.append(" and ").append(modify.get("tec_def"));
                             }
                         }
-                        metric.setTec_def(initSql.toString());
                     }
-                } else {
-                    throw new EruptApiErrorTip("依赖的原子指标id不存在！");
-                }
-                // join
-            }else{
-                Integer upstreamMetricId = metric.getUpstream_metric();
-                Integer upstreamMetricJoinId = metric.getUpstream_metric_join();
-                Integer event_upstream_metric = metric.getEvent_upstream_metric();
-
-                List<Map<String, Object>> upstreamMetricList = eruptDao.getJdbcTemplate()
-                        .queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricId));
-                List<Map<String, Object>> upstreamMetricJoinList = eruptDao.getJdbcTemplate().queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricJoinId));
-                List<Map<String, Object>> eventUpStreamList = eruptDao.getJdbcTemplate().queryForList(String.format("select * from metric_meta where id = '%s'", event_upstream_metric));
-
-
-                if (!upstreamMetricList.isEmpty() && !upstreamMetricJoinList.isEmpty()&& !eventUpStreamList.isEmpty()) {
-                    Map<String, Object> upstreamMetric = upstreamMetricList.get(0);
-                    Map<String, Object> upstreamMetricJoin = upstreamMetricJoinList.get(0);
-                    Map<String, Object> eventUpMetric = eventUpStreamList.get(0);
-                    String aggregationMethod = eventUpMetric.get("aggregation_method") + " " + metricName;
-                    Object              events            = upstreamMetric.get("events");
-                    Object              eventsJoin        = upstreamMetricJoin.get("events");
-
-
-                    Object availableDimensions = upstreamMetric.get("available_dimensions");
-                    Object availableDimensionsJoin = upstreamMetricJoin.get("available_dimensions");
-                    int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
-
-                    if (dataType == 2 ) {
-                        // 左表
-                        events = "'" + events.toString().replace(",", "','") + "'";
-                        initSql = new StringBuilder("select %s from v_event_12 where \"$part_event\" in (%s)");
-                        initSql = new StringBuilder(String.format(initSql.toString(), availableDimensions,events));
-                        List<Map<String, Object>> statPeriodList = eruptDao.getJdbcTemplate()
-                                .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period()));
-                        String statPeriod = "";
-                        statPeriod = statPeriodList.get(0).get("ta_tec_def").toString();
-                        initSql.append(" and ").append(statPeriod);
-                        if (modifier_def != null) {
-                            List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
-                                    .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifier_def));
-
-                            if (!modifierDefList.isEmpty()) {
-                                for (Map<String, Object> modify : modifierDefList) {
-                                    initSql.append(" and ").append(modify.get("tec_def"));
-                                }
-                            }
-                        }
-
-                        // 右表
-                        StringBuilder initSqlJoin = new StringBuilder();
+                    if (!is_event_related) {
+                        metric.setTec_def(initSql.toString());
+                    } else {
                         List<Map<String, Object>> statPeriodListJoin = eruptDao.getJdbcTemplate()
                                 .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period_join()));
-                        String statPeriodJoin = "";
+                        Map<String, Object> upstreamMetricJoin = upstreamMetricJoinList.get(0);
+                        Object projectNameJoin = upstreamMetricJoin.get("project_name");
+                        String eventsJoin = upstreamMetricJoin.get("events").toString();
+                        Object availableDimensionsJoin = upstreamMetricJoin.get("available_dimensions");
 
-                        if  (eventsJoin.equals("v_user_12") || eventsJoin.equals("user_result_cluster_12")){
+                        StringBuilder initSqlJoin = new StringBuilder();
+                        String statPeriodJoin = "";
+                        if (eventsJoin.contains("v_user_") || eventsJoin.contains("user_result_cluster_")) {
                             initSqlJoin.append("select %s from %s");
                             initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), availableDimensionsJoin, eventsJoin));
-
-                        }else{
-                            eventsJoin = "'" + eventsJoin.toString().replace(",", "','") + "'";
-                            initSqlJoin.append("select * from v_event_12 where \"$part_event\" in (%s)");
-                            initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), eventsJoin));
+                        } else {
+                            projectNameJoin = projectNameJoin == null ? "v_event_12" : projectNameJoin;
+                            eventsJoin = "'" + eventsJoin.replace(",", "','") + "'";
+                            initSqlJoin.append("select %s from %s where \"$part_event\" in (%s)");
+                            initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), availableDimensionsJoin, projectNameJoin, eventsJoin));
                         }
 
-                        if(!statPeriodListJoin.isEmpty()){
+                        if (!statPeriodListJoin.isEmpty()) {
                             statPeriodJoin = statPeriodListJoin.get(0).get("ta_tec_def").toString();
                             initSqlJoin.append(" and ").append(statPeriodJoin);
                         }
-                        if(modifier_def_join != null) {
+                        if (modifier_def_join != null) {
                             List<Map<String, Object>> modifierDefListJoin = eruptDao.getJdbcTemplate()
                                     .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifier_def_join));
                             if (!modifierDefListJoin.isEmpty()) {
                                 int i = 0;
+                                String condition = eventsJoin.contains("v_user_") || eventsJoin.contains("user_result_cluster_") ? " where " : " and ";
                                 for (Map<String, Object> modify : modifierDefListJoin) {
-                                    if (eventsJoin.equals("v_user_12") || eventsJoin.equals("user_result_cluster_12")){
-                                        if(i == 0){
-                                            initSqlJoin.append(" where ").append(modify.get("tec_def"));
-                                            i++;
-                                        }else {
-                                            initSqlJoin.append(" and ").append(modify.get("tec_def"));
-                                        }
-                                    }else {
-                                        initSqlJoin.append(" and ").append(modify.get("tec_def"));
-                                    }
+                                    initSqlJoin.append(i == 0 ? condition : " and ").append(modify.get("tec_def"));
+                                    i++;
                                 }
                             }
                         }
                         String joinCondition = String.format("t1.%s = t2.%s", metric.getJoin_condition_1(), metric.getJoin_condition_2());
                         initSql.append(") t1 ").append(metric.getEvent_related()).append(" (").append(initSqlJoin).append(") t2 on ").append(joinCondition);
-                        String        join_modifier_def = metric.getJoin_modifier_def();
+                        String join_modifier_def = metric.getJoin_modifier_def();
 
-                        // 关联指标的过滤条件
-                        if (join_modifier_def != null) {
-                            List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
-                                    .queryForList(String.format("select * from metric_modifiers where id in (%s)", join_modifier_def));
-                            if (!modifierDefList.isEmpty()) {
-                                int i = 0;
-                                for (Map<String, Object> modify : modifierDefList) {
-                                    if(i == 0){
-                                        initSql.append(" where ").append(modify.get("tec_def"));
-                                    }else{
-                                        initSql.append(" and ").append(modify.get("tec_def"));
-                                    }
-                                    i++;
-                                }
-                            }
-                        }
-                        System.out.println(initSql.toString());
-                        StringBuilder resultSql = new StringBuilder();
-                        String[] strings = aggregationMethod.split(" ");
-                        resultSql.append("select ");
-                        System.out.println(strings.length);
-                        if (strings.length == 3){
-                            int i = 0;
-                            for (String s : strings) {
-                                if(i == 1){
-                                    s = "t1." + s;
-                                }
-                                i++;
-                                resultSql.append(s).append(" ");
-                            }
-                        }else{
-                            resultSql.append(aggregationMethod).append(" ");
-                        }
+                        initSql.append(generateModifierSql(join_modifier_def, eruptDao));
 
-                        resultSql.append(" from (").append(initSql);
-                        metric.setTec_def(resultSql.toString());
+                        metric.setTec_def(String.format("select %s from (select t1.* from (%s) t", aggregationMethod, initSql));
                     }
+                    // doris
+                } else if (dataType == 1) {
+                    // 左表
+                    projectName = projectName == null ? "dw_ht_data" : projectName;
+                    initSql = new StringBuilder("select %s from %s");
+                    initSql = new StringBuilder(String.format(initSql.toString(), aggFunc, projectName + "." + events));
+                    //修饰词
+                    initSql.append(generateModifierSql(modifier_def, eruptDao));
+                    String statPeriod = "";
+                    if (!statPeriodList.isEmpty()) {
+                        statPeriod = statPeriodList.get(0).get("doris_tec_def").toString();
+                        if (initSql.toString().contains("where")) {
+                            initSql.append(" and ").append(statPeriod);
+                        } else {
+                            initSql.append(" where ").append(statPeriod);
+                        }
+                    }
+                    if (!is_event_related) {
+                        metric.setTec_def(initSql.toString());
+                    } else {
+                        List<Map<String, Object>> statPeriodListJoin = eruptDao.getJdbcTemplate()
+                                .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period_join()));
+                        Map<String, Object> upstreamMetricJoin = upstreamMetricJoinList.get(0);
+                        Object projectNameJoin = upstreamMetricJoin.get("project_name");
+                        String eventsJoin = upstreamMetricJoin.get("events").toString();
+                        Object availableDimensionsJoin = upstreamMetricJoin.get("available_dimensions");
+                        // 右表
+                        StringBuilder initSqlJoin = new StringBuilder();
+                        String statPeriodJoin = "";
+                        initSqlJoin.append("select %s from %s");
+                        projectNameJoin = projectNameJoin == null ? "dw_ht_data" : projectNameJoin;
+                        initSqlJoin = new StringBuilder(String.format(initSqlJoin.toString(), availableDimensionsJoin, projectNameJoin + "." + eventsJoin));
+                        initSqlJoin.append(generateModifierSql(modifier_def_join, eruptDao));
+                        if (!statPeriodListJoin.isEmpty()) {
+                            statPeriodJoin = statPeriodListJoin.get(0).get("doris_tec_def").toString();
+                            if (initSql.toString().contains("where")) {
+                                initSql.append(" and ").append(statPeriodJoin);
+                            } else {
+                                initSql.append(" where ").append(statPeriodJoin);
+                            }
+                        }
+                        String joinCondition = String.format("t1.%s = t2.%s", metric.getJoin_condition_1(), metric.getJoin_condition_2());
+                        initSql.append(") t1 ").append(metric.getEvent_related()).append(" (").append(initSqlJoin).append(") t2 on ").append(joinCondition);
+                        String join_modifier_def = metric.getJoin_modifier_def();
+                        initSql.append(generateModifierSql(join_modifier_def, eruptDao));
 
+                        metric.setTec_def(String.format("select %s from (select t1.* from (%s) t", aggregationMethod, initSql));
+                    }
                 }
-                else {
-                    throw new EruptApiErrorTip("依赖的原子指标id不存在！");
-                }
+            } else {
+                throw new EruptApiErrorTip("依赖的原子指标id不存在！");
             }
         }
     }
 
     @Override
     public String beforeFetch(List<Condition> conditions) {
-        String    result = null;
+        String result = null;
         Condition remove = null;
         for (Condition condition : conditions) {
             if ("modifier_def".equals(condition.getKey())) {
@@ -278,9 +234,9 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
     public void afterFetch(Collection<Map<String, Object>> result) {
         result.forEach(map -> {
             if (map.containsKey("modifier_def") && map.get("modifier_def") != null) {
-                String modifierDef    = map.get("modifier_def").toString();
-                int    upstreamMetric = (int) map.get("upstream_metric");
-                String modifierView   = getModifierView(modifierDef, upstreamMetric,false);
+                String modifierDef = map.get("modifier_def").toString();
+                int upstreamMetric = (int) map.get("upstream_metric");
+                String modifierView = getModifierView(modifierDef, upstreamMetric, false);
                 map.put("modifier_def_view", modifierView);
             }
         });
@@ -288,12 +244,9 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
     @Override
     public void editBehavior(MetricMetaDerive metric) {
-
-
-
-        String  modifierDef    = metric.getModifier_def();
+        String modifierDef = metric.getModifier_def();
         Integer upstreamMetric = metric.getUpstream_metric();
-        metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric,true));
+        metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric, true));
 
         String joinTableConfig = metric.getJoin_table_config();
         if (StringUtils.isNotBlank(joinTableConfig)) {
@@ -305,12 +258,10 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             }
 
             String joinModifierDef = joinTable.getString("join_modifier_def");
-            Integer eventUpstreamMetric = joinTable.getInteger("event_upstream_metric");
-            if (joinModifierDef != null && eventUpstreamMetric != null) {
-                metric.setJoin_modifier_def_view(getModifierView(joinModifierDef, eventUpstreamMetric, true));
+            if (joinModifierDef != null) {
+                metric.setJoin_modifier_def_view(getModifierView(joinModifierDef, upstreamMetric, true));
             }
 
-            metric.setEvent_upstream_metric(eventUpstreamMetric);
             metric.setJoin_condition_1(joinTable.getString("join_condition_1"));
             metric.setUpstream_metric_join(upstreamMetricJoin);
             metric.setStat_period_join(joinTable.getInteger("stat_period_join"));
@@ -323,11 +274,10 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
     @Override
     public void beforeUpdate(MetricMetaDerive metric) {
-
         beforeAdd(metric);
     }
 
-    private String getModifierView(String modifierDef, int upstreamMetric,boolean needMetric ) {
+    private String getModifierView(String modifierDef, int upstreamMetric, boolean needMetric) {
         if (StringUtils.isNotBlank(modifierDef)) {
             String sql = "select t1.id,modifier_zh_name,metric_zh_name from " +
                     "(select * from metric_modifiers where id in (%s)) t1 " +
@@ -340,10 +290,23 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             return maps.stream()
                     .map(s -> needMetric
                             ? Joiner.on(":").join(s.get("id").toString(), s.get("modifier_zh_name"), s.getOrDefault("metric_zh_name", "null"))
-                            :Joiner.on(":").join(s.get("id").toString(), s.get("modifier_zh_name")))
+                            : Joiner.on(":").join(s.get("id").toString(), s.get("modifier_zh_name")))
                     .collect(Collectors.joining("|"));
         }
         return null;
     }
 
+    public static StringBuilder generateModifierSql(String modifierDef, EruptDao eruptDao) {
+        StringBuilder initSql = new StringBuilder();
+        if (modifierDef != null) {
+            List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
+                    .queryForList(String.format("select * from metric_modifiers where id in (%s)", modifierDef));
+            String condition = modifierDefList.isEmpty() ? "" : " where ";
+            String modifierSql = modifierDefList.stream()
+                    .map(modify -> modify.get("tec_def").toString())
+                    .collect(Collectors.joining(" and ", condition, ""));
+            initSql.append(modifierSql);
+        }
+        return initSql;
+    }
 }

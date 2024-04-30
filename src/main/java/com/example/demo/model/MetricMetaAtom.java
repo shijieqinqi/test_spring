@@ -7,6 +7,7 @@ import com.example.demo.service.BaseDataProxy;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
+import xyz.erupt.annotation.sub_erupt.RowOperation;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
@@ -18,7 +19,13 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Erupt(name = "原子指标",
-        filter = @Filter("MetricMetaAtom.metric_type = 1")
+        filter = @Filter("MetricMetaAtom.metric_type = 1"),
+        rowOperation = {
+                @RowOperation(
+                        title = "复制",
+                        icon = "fa fa-clone",
+                        mode = RowOperation.Mode.SINGLE,
+                        operationHandler = AtomDataCopyHandlerImpl.class),}
         ,dataProxy = BaseDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
@@ -91,19 +98,6 @@ public class MetricMetaAtom extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "事实表"
-            ),
-            edit = @Edit(
-                    title = "事实表",
-                    type = EditType.INPUT, search = @Search, notNull = true,
-                    inputType = @InputType
-            )
-    )
-    private String events;
-
-
-    @EruptField(
-            views = @View(
                     title = "数据源"
             ),
             edit = @Edit(
@@ -113,6 +107,30 @@ public class MetricMetaAtom extends MetaBase {
             )
     )
     private String data_type;
+
+    @EruptField(
+            views = @View(
+                    title = "项目名/库名",desc = "为空时：数据源为 ta 时默认为：v_event_12，数据源为 doris 时默认为：dw_ht_data"
+            ),
+            edit = @Edit(
+                    title = "项目名/库名",desc = "当数据源为 ta 时默认为：v_event_12，当数据源为 doris 时默认为：dw_ht_data",
+                    type = EditType.INPUT,
+                    inputType = @InputType
+            )
+    )
+    private String project_name;
+
+    @EruptField(
+            views = @View(
+                    title = "事实表"
+            ),
+            edit = @Edit(
+                    title = "事实表",
+                    type = EditType.INPUT, search = @Search,
+                    inputType = @InputType
+            )
+    )
+    private String events;
 
     @EruptField(
             views = @View(
