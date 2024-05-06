@@ -106,33 +106,6 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Boolean status;
 
-    @EruptField(
-            views = @View(
-                    title = "是否事件关联"
-            ),
-            edit = @Edit(
-                    title = "是否事件关联",
-                    type = EditType.BOOLEAN, notNull = true, search = @Search,
-                    boolType = @BoolType
-            )
-    )
-    private Boolean is_event_related;
-
-
-
-    @EruptField(
-            views = @View(
-                    title = "关联类型"
-            ),
-            edit = @Edit(
-                    title = "关联类型",
-                    type = EditType.CHOICE, search = @Search,
-                    choiceType = @ChoiceType(vl = {@VL(value = "join", label = "join"), @VL(value = "left join", label = "left join"),
-                            @VL(value = "right join", label = "right join"), @VL(value = "full join", label = "full join")})
-                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private String event_related;
 
     @Transient
     @EruptField(
@@ -173,15 +146,6 @@ public class MetricMetaDerive extends MetaBase {
     private Integer stat_period;
 
 
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "关联条件字段",
-                    type = EditType.INPUT,
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private String join_condition_1;
 
     @EruptField(
             views = @View(
@@ -206,106 +170,6 @@ public class MetricMetaDerive extends MetaBase {
     )
     @Transient
     private String modifier_def_view;
-
-
-
-
-
-    @Transient
-    @EruptField(
-            edit = @Edit(title = "关联表配置", type = EditType.DIVIDE,
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1"))
-    )
-    private String divide2;
-
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "右表上游指标",
-                    type = EditType.CHOICE,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
-                    )
-                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private Integer upstream_metric_join;
-
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "右表统计周期",
-                    type = EditType.CHOICE,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,stat_period_zh_name from metric_stat_period"
-                    )
-                    , showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private Integer stat_period_join;
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "右表关联条件字段",
-                    type = EditType.INPUT,
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1")
-            )
-    )
-    private String join_condition_2;
-
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "右表修饰词id",
-                    type = EditType.CHOICE, show = false,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,id from metric_modifiers order by id "
-                    )
-            )
-    )
-    private String modifier_def_join;
-
-    @EruptField(
-            edit = @Edit(title = "右表修饰词描述", desc = "格式(id:修饰名:所属原子指标名)",
-                    type = EditType.TAGS,
-                    tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1"))
-
-    )
-    @Transient
-    private String modifier_def_view_join;
-
-    @Transient
-    @EruptField(
-            edit = @Edit(
-                    title = "关联修饰词id",
-                    type = EditType.CHOICE, show = false, search = @Search,
-                    choiceType = @ChoiceType(
-                            fetchHandler = SqlChoiceFetchHandler.class,
-                            fetchHandlerParams = "select id,id from metric_modifiers order by id "
-                    )
-            )
-    )
-    private String join_modifier_def;
-
-
-    @EruptField(
-            edit = @Edit(title = "关联修饰词", desc = "格式(id:修饰名:所属原子指标名)",
-                    type = EditType.TAGS,show = false,
-                    tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
-                    showBy = @ShowBy(dependField = "is_event_related", expr = "value == 1"))
-    )
-    @Transient
-    private String join_modifier_def_view;
-
-
 
     @EruptField(
             views = @View(
@@ -340,18 +204,5 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Date recent_cal_time;
 
-    @EruptField(
-            views = @View(
-                    title = "关联表配置"
-            ),
-            edit = @Edit(
-                    title = "关联表配置",
-                    type = EditType.CODE_EDITOR,
-                    codeEditType = @CodeEditorType(language = "json"),
-                    show = false
-            )
-    )
-    private @Lob
-    String join_table_config;
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
+import com.example.demo.service.AtomDataCopyHandlerImpl;
 import com.example.demo.service.BaseDataProxy;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
@@ -84,17 +85,6 @@ public class MetricMetaAtom extends MetaBase {
     )
     private String aggregation_method;
 
-    @EruptField(
-            views = @View(
-                    title = "可用维度"
-            ),
-            edit = @Edit(
-                    title = "可用维度",
-                    type = EditType.INPUT, search = @Search,
-                    inputType = @InputType
-            )
-    )
-    private String available_dimensions;
 
     @EruptField(
             views = @View(

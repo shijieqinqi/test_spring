@@ -61,6 +61,37 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
+                    title = "推送小时"
+            ),
+            edit = @Edit(
+                    title = "推送小时",
+                    type = EditType.CHOICE, search = @Search, notNull = true,
+                    choiceType = @ChoiceType(vl = {@VL(value = "1", label = "00"), @VL(value = "2", label = "01"),
+                            @VL(value = "3", label = "02"), @VL(value = "4", label = "03"),@VL(value = "5", label = "04"), @VL(value = "6", label = "05"),
+                            @VL(value = "7", label = "06"), @VL(value = "8", label = "07"),@VL(value = "9", label = "08"), @VL(value = "10", label = "09"),
+                            @VL(value = "11", label = "10"), @VL(value = "12", label = "11"),@VL(value = "13", label = "12"), @VL(value = "14", label = "13"),
+                            @VL(value = "15", label = "14"), @VL(value = "16", label = "15"),@VL(value = "17", label = "16"), @VL(value = "18", label = "17"),
+                            @VL(value = "19", label = "18"), @VL(value = "20", label = "19"),@VL(value = "21", label = "20"), @VL(value = "22", label = "21"),
+                            @VL(value = "23", label = "22"), @VL(value = "24", label = "23")})
+            )
+    )
+    private Integer report_time;
+
+
+    @EruptField(
+            views = @View(
+                    title = "推送分钟"
+            ),
+            edit = @Edit(
+                    title = "推送分钟",
+                    type = EditType.CHOICE, search = @Search, notNull = true,
+                    choiceType = @ChoiceType(vl = {@VL(value = "1", label = "00"), @VL(value = "2", label = "30")})
+            )
+    )
+    private Integer report_minute;
+
+    @EruptField(
+            views = @View(
                     title = "报表url"
             ),
             edit = @Edit(
