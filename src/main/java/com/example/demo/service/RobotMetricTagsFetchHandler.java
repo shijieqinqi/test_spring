@@ -30,12 +30,6 @@ public class RobotMetricTagsFetchHandler implements TagsFetchHandler {
 
         List<Map<String, Object>> list = eruptDao.getJdbcTemplate()
                 .queryForList(sql);
-        for (int i = 1;i<10 ;i++ ){
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("id","-1");
-            map.put("metric_zh_name","换行" + i);
-            list.add(map);
-        }
 
         return list.stream()
                 .map(s -> Joiner.on(":").join(s.get("id"), s.get("metric_zh_name")))

@@ -116,10 +116,18 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "推送指标",show = false
+                    title = "推送顺序"
+            ),
+            edit = @Edit(
+                    title = "推送顺序",desc = "默认为1",
+                    type = EditType.CHOICE, search = @Search,
+                    choiceType = @ChoiceType(vl = {@VL(value = "1", label = "1"), @VL(value = "2", label = "2")
+                            , @VL(value = "3", label = "3"), @VL(value = "4", label = "4"), @VL(value = "5", label = "5")
+                            , @VL(value = "6", label = "6"), @VL(value = "7", label = "7"), @VL(value = "8", label = "8")
+                            , @VL(value = "9", label = "9"), @VL(value = "10", label = "10")})
             )
     )
-    private String metrics;
+    private Integer push_order;
 
     @EruptField(
             views = @View(title = "推送指标",desc = "格式(id:指标名)"),
@@ -129,5 +137,16 @@ public class RobotReport extends MetaBase {
     )
     @Transient
     private String metrics_view;
+
+    @EruptField(
+            views = @View(
+                    title = "推送指标id",show = false
+            ),
+            edit = @Edit(
+                    title = "推送指标id",
+                    type = EditType.TEXTAREA, notNull = true
+            )
+    )
+    private String metrics;
 
 }

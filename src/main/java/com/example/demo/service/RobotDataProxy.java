@@ -33,7 +33,6 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
             String[] idArr = Arrays.stream(metricIdsView.split("\\|"))
                     .map(part -> part.split(":")[0])
                     .toArray(String[]::new);
-            metric.setMetrics(StringUtils.join(idArr, ","));
         }
     }
 
@@ -68,7 +67,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
         result.forEach(map -> {
             if (map.containsKey("metrics") && map.get("metrics") != null) {
                 String metricIds = map.get("metrics").toString();
-                String metricIdsView   = getMetricIdsView(metricIds,false);
+                String metricIdsView   = getMetricIdsView(metricIds);
                 map.put("metrics_view", metricIdsView);
             }
         });
@@ -77,7 +76,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
     @Override
     public void editBehavior(RobotReport metric) {
         String metricIds = metric.getMetrics();
-        metric.setMetrics_view(getMetricIdsView(metricIds,true));
+        metric.setMetrics_view(getMetricIdsView(metricIds));
     }
 
     @Override
@@ -85,7 +84,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
         beforeAdd(metric);
     }
 
-    private String getMetricIdsView(String metricIds, boolean showNewline) {
+    private String getMetricIdsView(String metricIds) {
         if (StringUtils.isNotBlank(metricIds)) {
             String sql = "select id, metric_zh_name from metric_meta \n" +
                     "where id in (%s)";
@@ -99,14 +98,8 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
             }
 
             ArrayList<Object> resultList = new ArrayList<>();
-            int i = 1;
             for (String metric : metricIds.split(",")) {
-                if ("-1".equals(metric)) {
-                    if (showNewline) {
-                        resultList.add("-1:换行"+i);
-                        i++;
-                    }
-                } else {
+                if (!"-1".equals(metric)) {
                     resultList.add(hashMap.get(metric));
                 }
             }
