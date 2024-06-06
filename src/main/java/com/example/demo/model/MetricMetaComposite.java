@@ -2,8 +2,6 @@ package com.example.demo.model;/*
  * Copyright © 2020-2035 erupt.xyz All rights reserved.
  * Author: YuePeng (erupts@126.com)
  */
-
-
 import com.example.demo.service.CompositeDataProxy;
 import com.example.demo.service.CompositeTagsFetchHandler;
 import lombok.Data;
@@ -23,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
 
+
 @Data
 @Erupt(name = "复合指标",
         filter = @Filter("MetricMetaComposite.metric_type = 3")
@@ -37,7 +36,7 @@ public class MetricMetaComposite extends MetaBase {
             ),
             edit = @Edit(
                     title = "指标名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true),notNull = true,
                     inputType = @InputType
             )
     )
@@ -45,11 +44,11 @@ public class MetricMetaComposite extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "中文名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "显示名",
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )

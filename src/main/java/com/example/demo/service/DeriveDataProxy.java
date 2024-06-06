@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.model.MetricMetaDerive;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
@@ -43,10 +42,10 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
         if (StringUtils.isBlank(tecDef)) {
             // 派生指标生成sql
-            String metricName = metric.getMetric_name();
-            String modifierDef = metric.getModifier_def();
-            StringBuilder initSql = new StringBuilder();
             Integer upstreamMetricId = metric.getUpstream_metric();
+            String metricName        = metric.getMetric_name();
+            String modifierDef       = metric.getModifier_def();
+            StringBuilder initSql    = new StringBuilder();
 
             List<Map<String, Object>> upstreamMetricList = eruptDao.getJdbcTemplate()
                     .queryForList(String.format("select * from metric_meta where id = '%s'", upstreamMetricId));
@@ -55,9 +54,9 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                 List<Map<String, Object>> statPeriodList = eruptDao.getJdbcTemplate()
                         .queryForList(String.format("select * from metric_stat_period where id = '%s'", metric.getStat_period()));
                 Map<String, Object> upstreamMetric = upstreamMetricList.get(0);
-                String aggregationMethod = upstreamMetric.get("aggregation_method") + " " + metricName;
-                Object events = upstreamMetric.get("events");
-                Object projectName = upstreamMetric.get("project_name");
+                String aggregationMethod           = upstreamMetric.get("aggregation_method") + " " + metricName;
+                Object events                      = upstreamMetric.get("events");
+                Object projectName                 = upstreamMetric.get("project_name");
                 int dataType = Integer.parseInt(upstreamMetric.get("data_type").toString());
                 //ta
                 if (dataType == 2) {
@@ -78,12 +77,10 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                             }
                         }
                     }
-                    metric.setTec_def(initSql.toString());
                   // doris
                 } else if (dataType == 1) {
                     projectName = projectName == null ? "dw_ht_data" : projectName;
-                    initSql = new StringBuilder("select %s from %s");
-                    initSql = new StringBuilder(String.format(initSql.toString(), aggregationMethod, projectName + "." + events));
+                    initSql     = new StringBuilder(String.format("select %s from %s", aggregationMethod, projectName + "." + events));
                     //修饰词
                     if (modifierDef != null) {
                         List<Map<String, Object>> modifierDefList = eruptDao.getJdbcTemplate()
@@ -104,8 +101,8 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                             initSql.append(" where ").append(statPeriod);
                         }
                     }
-                    metric.setTec_def(initSql.toString());
                 }
+                metric.setTec_def(initSql.toString());
             } else {
                 throw new EruptApiErrorTip("依赖的原子指标id不存在！");
             }
@@ -171,6 +168,4 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
         }
         return null;
     }
-
-
 }

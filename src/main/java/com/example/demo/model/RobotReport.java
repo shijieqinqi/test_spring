@@ -1,22 +1,32 @@
 package com.example.demo.model;
 
 
+import com.example.demo.service.PushRobotHandlerImpl;
 import com.example.demo.service.RobotDataProxy;
 import com.example.demo.service.RobotMetricTagsFetchHandler;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
+import xyz.erupt.annotation.sub_erupt.RowOperation;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
+import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Date;
 
 @Data
 @Erupt(name = "机器人推送配置",
+        rowOperation = {
+                @RowOperation(
+                        title = "手动推送",
+                        icon = "fa fa-hand-pointer-o",
+                        mode = RowOperation.Mode.MULTI,
+                        operationHandler = PushRobotHandlerImpl.class)},
         dataProxy = RobotDataProxy.class)
 @Table(name = "robot_report_meta")
 @Entity
@@ -28,7 +38,7 @@ public class RobotReport extends MetaBase {
             ),
             edit = @Edit(
                     title = "标题",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -116,23 +126,24 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "推送顺序"
+                    title = "推送优先级",desc = "当同token同推送时间下有多个推送任务时，优先级高的会先执行"
             ),
             edit = @Edit(
-                    title = "推送顺序",desc = "默认为1",
+                    title = "推送优先级",desc = "当同token同推送时间下有多个推送任务时，优先级高的会先执行；不填时默认填充1",
                     type = EditType.CHOICE, search = @Search,
                     choiceType = @ChoiceType(vl = {@VL(value = "1", label = "1"), @VL(value = "2", label = "2")
                             , @VL(value = "3", label = "3"), @VL(value = "4", label = "4"), @VL(value = "5", label = "5")
                             , @VL(value = "6", label = "6"), @VL(value = "7", label = "7"), @VL(value = "8", label = "8")
                             , @VL(value = "9", label = "9"), @VL(value = "10", label = "10")})
             )
+
     )
     private Integer push_order;
 
     @EruptField(
-            views = @View(title = "推送指标",desc = "格式(id:指标名)"),
-            edit = @Edit(title = "推送指标", desc = "格式(id:指标名)",
-                    type = EditType.TAGS, notNull = true, search = @Search,
+            views = @View(title = "推送指标",desc = "格式(id:指标名)",show = false),
+            edit = @Edit(title = "推送指标", desc = "格式(id:指标名)，增加或删除指标",
+                    type = EditType.TAGS, notNull = true, search = @Search(vague = true),
                     tagsType = @TagsType(fetchHandler = RobotMetricTagsFetchHandler.class,allowExtension = false))
     )
     @Transient
@@ -140,13 +151,19 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "推送指标id",show = false
+                    title = "推送配置",show = false
             ),
             edit = @Edit(
-                    title = "推送指标id",
-                    type = EditType.TEXTAREA, notNull = true
+                    title = "推送配置",desc = "id:指标id,数组内顺序为推送顺序,换行id为-1；precision:小数点位数；compare:1(环比昨日),2(环比上月)  示例：[{\"id\": 1, \"precision\": 0, \"compare\": 2}, {\"id\": 2, \"precision\": 2,\"compare\": 1}]",
+                    type = EditType.CODE_EDITOR,
+                    codeEditType = @CodeEditorType(language = "json")
             )
     )
-    private String metrics;
+    private String push_conf;
 
+    @EruptField(
+            views = @View(
+                    title = "报表最近推送时间", type = ViewType.DATE_TIME)
+    )
+    private Date recent_push_time;
 }

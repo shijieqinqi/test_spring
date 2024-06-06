@@ -1,5 +1,9 @@
 package com.example.demo.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.example.demo.model.RobotReport;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
@@ -28,11 +32,34 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
     public void beforeAdd(RobotReport metric) {
         metric.setUpdater(eruptUserService.getCurrentEruptUser().getId());
         metric.setUpdate_time(new Date());
-        String metricIdsView = metric.getMetrics_view();
-        if (StringUtils.isNotBlank(metricIdsView)) {
-            String[] idArr = Arrays.stream(metricIdsView.split("\\|"))
-                    .map(part -> part.split(":")[0])
-                    .toArray(String[]::new);
+        Integer push_order = metric.getPush_order();
+        if (push_order == null) {
+            metric.setPush_order(1);
+        }
+
+        String pushConf = metric.getPush_conf();
+        String[] metricIdOrder = Arrays.stream(metric.getMetrics_view().split("\\|"))
+                .map(part -> part.split(":")[0])
+                .toArray(String[]::new);
+        if (StringUtils.isBlank(pushConf)) {
+            ArrayList<JSONObject> pushConfResult = new ArrayList<>();
+            for (String id : metricIdOrder) {
+                pushConfResult.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1}", id)));
+            }
+            metric.setPush_conf(pushConfResult.toString().replace("}, {", "}\n,{").replace("[", "[\n ").replace("]", "\n]"));
+        } else {
+            List<String> ids      = new ArrayList<>(Arrays.asList(metricIdOrder));
+            ArrayList<JSONObject>    confList = JSON.parseObject(pushConf,new TypeReference<ArrayList<JSONObject>>(){});
+            confList.removeIf(e -> !ids.contains(e.getString("id")) && !"-1".equals(e.getString("id")));
+            List<String> confIdList = new ArrayList<>() ;
+            for (JSONObject o : confList) {
+                confIdList.add(o.getString("id"));
+            }
+            ids.removeAll(confIdList);
+            for (String id : ids) {
+                confList.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1}", id)));
+            }
+            metric.setPush_conf(confList.toString().replace("}, {", "}\n,{").replace("[", "[\n ").replace("]", "\n]"));
         }
     }
 
@@ -50,9 +77,9 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
                             .toArray(String[]::new);
                     for (String id : idArr) {
                         if (StringUtils.isNotBlank(result)) {
-                            result = result + String.format(" and find_in_set(%s,metrics)>0 ", id);
+                            result = result + String.format(" and JSON_CONTAINS(push_conf,'{\"id\":%s}') = 1 ", id);
                         } else {
-                            result = String.format("find_in_set(%s,metrics)>0 ", id);
+                            result = String.format(" JSON_CONTAINS(push_conf,'{\"id\":%s}') = 1 ", id);
                         }
                     }
                 }
@@ -64,10 +91,16 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
 
     @Override
     public void afterFetch(Collection<Map<String, Object>> result) {
+
         result.forEach(map -> {
-            if (map.containsKey("metrics") && map.get("metrics") != null) {
-                String metricIds = map.get("metrics").toString();
-                String metricIdsView   = getMetricIdsView(metricIds);
+            if (map.containsKey("push_conf") && map.get("push_conf") != null) {
+                JSONArray     pushConf  = JSONObject.parseObject(map.get("push_conf").toString(), JSONArray.class);
+                ArrayList<Object> metricIds = new ArrayList<>();
+                for (Object o : pushConf) {
+                    JSONObject idConf = (JSONObject) o;
+                    metricIds.add(idConf.getInteger("id"));
+                }
+                String metricIdsView   = getMetricIdsView(Joiner.on(",").join(metricIds));
                 map.put("metrics_view", metricIdsView);
             }
         });
@@ -75,8 +108,14 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
 
     @Override
     public void editBehavior(RobotReport metric) {
-        String metricIds = metric.getMetrics();
-        metric.setMetrics_view(getMetricIdsView(metricIds));
+        JSONArray     pushConf  = JSONObject.parseObject(metric.getPush_conf(), JSONArray.class);
+        ArrayList<Object> metricIds = new ArrayList<>();
+        for (Object o : pushConf) {
+            JSONObject idConf = (JSONObject) o;
+            metricIds.add(idConf.getInteger("id"));
+        }
+        metric.setMetrics_view(getMetricIdsView(Joiner.on(",").join(metricIds)));
+
     }
 
     @Override
@@ -104,9 +143,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
                 }
             }
             return Joiner.on("|").join(resultList);
-
         }
         return null;
     }
-
 }

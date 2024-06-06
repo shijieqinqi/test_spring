@@ -36,10 +36,10 @@ public class MetricStatPeriod extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "中文名",
+                    title = "显示名",
                     type = EditType.INPUT, search = @Search, notNull = true,
                     inputType = @InputType
             )

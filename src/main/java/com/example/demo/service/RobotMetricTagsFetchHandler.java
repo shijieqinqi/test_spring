@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import xyz.erupt.annotation.fun.TagsFetchHandler;
 import xyz.erupt.jpa.dao.EruptDao;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

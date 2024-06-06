@@ -48,7 +48,7 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "指标名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true) , notNull = true,
                     inputType = @InputType
             )
     )
@@ -56,11 +56,11 @@ public class MetricMetaDerive extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "中文名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "显示名",
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -106,7 +106,6 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Boolean status;
 
-
     @Transient
     @EruptField(
             edit = @Edit(title = "表配置", type = EditType.DIVIDE)
@@ -119,7 +118,7 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "上游指标",
-                    type = EditType.CHOICE, search = @Search, notNull = true,
+                    type = EditType.CHOICE, search = @Search,notNull = true,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
@@ -127,8 +126,6 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Integer upstream_metric;
-
-
 
     @EruptField(
             views = @View(
@@ -144,8 +141,6 @@ public class MetricMetaDerive extends MetaBase {
             )
     )
     private Integer stat_period;
-
-
 
     @EruptField(
             views = @View(
@@ -177,12 +172,11 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "业务定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    type = EditType.TEXTAREA, notNull = true
             )
     )
     private @Lob
     String product_def;
-
 
     @EruptField(
             views = @View(

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 
-
 import com.example.demo.model.MetricMetaAtom;
 import org.springframework.stereotype.Service;
 import xyz.erupt.annotation.fun.OperationHandler;
@@ -28,9 +27,9 @@ public class AtomDataCopyHandlerImpl implements OperationHandler<MetricMetaAtom,
         System.out.println(data.size());
         try {
 
-            String queryField = String.format("concat('copy_',metric_name),metric_zh_name,metric_type,0,     metric_theme,%s,    now(),      product_def,project_name,events,data_type,available_dimensions,aggregation_method"
+            String queryField = String.format("concat('copy_',metric_name),metric_zh_name,metric_type,0,     metric_theme,%s,    now(),      product_def,project_name,events,data_type,aggregation_method"
                     , eruptUserService.getCurrentEruptUser().getId());
-            String                  insertField    =          "metric_name,metric_zh_name,metric_type,status,metric_theme,updater,update_time,product_def,project_name,events,data_type,available_dimensions,aggregation_method";
+            String                  insertField    =          "metric_name,metric_zh_name,metric_type,status,metric_theme,updater,update_time,product_def,project_name,events,data_type,aggregation_method";
             MetricMetaAtom metricMetaAtom = data.get(0);
             eruptDao.getJdbcTemplate().execute(String.format("insert into metric_meta(%s) select %s from metric_meta where id = '%s'", insertField,queryField,metricMetaAtom.getId()));
 

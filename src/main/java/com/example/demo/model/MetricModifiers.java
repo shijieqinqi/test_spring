@@ -3,7 +3,6 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
-
 import com.example.demo.service.ModifierDataProxy;
 import com.example.demo.service.ModifierIdTagsFetchHandler;
 import lombok.Data;
@@ -34,7 +33,7 @@ public class MetricModifiers extends MetaBase {
             ),
             edit = @Edit(
                     title = "修饰词名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -42,11 +41,11 @@ public class MetricModifiers extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "中文名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "显示名",
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -92,7 +91,7 @@ public class MetricModifiers extends MetaBase {
             ),
             edit = @Edit(
                     title = "技术定义",
-                    type = EditType.CODE_EDITOR,notNull = true,search = @Search,
+                    type = EditType.CODE_EDITOR,notNull = true,search = @Search(vague = true),
                     codeEditType = @CodeEditorType(language = "sql")
             )
     )

@@ -1,7 +1,4 @@
-package com.example.demo.model;/*
- * Copyright © 2020-2035 erupt.xyz All rights reserved.
- * Author: YuePeng (erupts@126.com)
- */
+package com.example.demo.model;
 
 import com.example.demo.service.AtomDataCopyHandlerImpl;
 import com.example.demo.service.BaseDataProxy;
@@ -22,11 +19,11 @@ import javax.persistence.Table;
 @Erupt(name = "原子指标",
         filter = @Filter("MetricMetaAtom.metric_type = 1"),
         rowOperation = {
-                @RowOperation(
-                        title = "复制",
-                        icon = "fa fa-clone",
-                        mode = RowOperation.Mode.SINGLE,
-                        operationHandler = AtomDataCopyHandlerImpl.class),}
+        @RowOperation(
+                title = "复制",
+                icon = "fa fa-clone",
+                mode = RowOperation.Mode.SINGLE,
+                operationHandler = AtomDataCopyHandlerImpl.class),}
         ,dataProxy = BaseDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
@@ -38,7 +35,7 @@ public class MetricMetaAtom extends MetaBase {
             ),
             edit = @Edit(
                     title = "指标名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -46,11 +43,11 @@ public class MetricMetaAtom extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "中文名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "显示名",
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -85,7 +82,6 @@ public class MetricMetaAtom extends MetaBase {
     )
     private String aggregation_method;
 
-
     @EruptField(
             views = @View(
                     title = "数据源"
@@ -104,7 +100,7 @@ public class MetricMetaAtom extends MetaBase {
             ),
             edit = @Edit(
                     title = "项目名/库名",desc = "当数据源为 ta 时默认为：v_event_12，当数据源为 doris 时默认为：dw_ht_data",
-                    type = EditType.INPUT,
+                    type = EditType.INPUT,search = @Search,
                     inputType = @InputType
             )
     )
@@ -116,7 +112,7 @@ public class MetricMetaAtom extends MetaBase {
             ),
             edit = @Edit(
                     title = "事实表",
-                    type = EditType.INPUT, search = @Search,
+                    type = EditType.INPUT, search = @Search(vague = true),
                     inputType = @InputType
             )
     )
@@ -140,22 +136,10 @@ public class MetricMetaAtom extends MetaBase {
             ),
             edit = @Edit(
                     title = "业务定义",
-                    type = EditType.TEXTAREA, search = @Search, notNull = true
+                    type = EditType.TEXTAREA, notNull = true
             )
     )
     private @Lob String product_def;
 
-
-    @EruptField(
-            views = @View(
-                    title = "技术定义",show = false
-            ),
-            edit = @Edit(
-                    title = "技术定义",
-                    type = EditType.CODE_EDITOR, show = false,
-                    codeEditType = @CodeEditorType(language = "sql")
-            )
-    )
-    private @Lob String tec_def;
 
 }

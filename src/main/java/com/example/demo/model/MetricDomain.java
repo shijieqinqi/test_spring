@@ -29,7 +29,7 @@ public class MetricDomain extends MetaBase {
             ),
             edit = @Edit(
                     title = "数据域名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -37,11 +37,11 @@ public class MetricDomain extends MetaBase {
 
     @EruptField(
             views = @View(
-                    title = "数据域中文名"
+                    title = "显示名"
             ),
             edit = @Edit(
-                    title = "数据域中文名",
-                    type = EditType.INPUT, search = @Search, notNull = true,
+                    title = "显示名",
+                    type = EditType.INPUT, search = @Search(vague = true), notNull = true,
                     inputType = @InputType
             )
     )
@@ -77,3 +77,4 @@ public class MetricDomain extends MetaBase {
     private Integer parent_id;
 
 }
+    
