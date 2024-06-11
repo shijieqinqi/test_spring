@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
 
-
 @Data
 @Erupt(name = "复合指标",
         filter = @Filter("MetricMetaComposite.metric_type = 3")
