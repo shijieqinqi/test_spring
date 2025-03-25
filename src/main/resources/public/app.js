@@ -5,12 +5,10 @@ window.eruptSiteConfig = {
     //附件地址，一般情况下不需要指定，如果自定义对象存储空间，则需在此指定附件资源访问地址
     fileDomain: "",
     //标题
-    title: "Hello Talk",
+    title: "HelloTalk 指标系统",
     //描述
-    desc: "后台管理",
-    //logo路径
-    logoPath: "erupt.svg",
+    desc: "指标开发与管理平台",
     //logo文字
-    logoText: "Hello Talk",
+    logoText: "HelloTalk",
     copyright: false
 };

@@ -11,3 +11,10 @@ spring:
     database: mysql
 server:
   port: 8111
+  servlet:
+    session:
+      timeout: 10800 # 设置会话超时时间为180分钟
+
+logging:
+  level:
+    root: WARN

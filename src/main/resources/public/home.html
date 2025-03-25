@@ -1,12 +1,364 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <title>home</title>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
 </head>
 <body>
-<!--自定义首页-->
-<h1>I'm home</h1>
+<div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="true">
+    <h1 style="text-align: center;"><span style="font-size: 24pt;">HelloTalk指标库平台</span></h1>
+    <h1 class="heading-1 ace-line old-record-id-OClMdimwtoXScIxQQJAcFxm1nsb">概述</h1>
+    <div class="ace-line ace-line old-record-id-FTUKdo4CyoOlOXxFGzAcs6gAnOh">指标库平台的价值在于可以帮助相关部门实现数据驱动的管理和决策。通过指标库平台，能够集中管理和监控各个业务领域的关键指标，及时发现问题和机会，并快速采取行动</div>
+    <div class="ace-line ace-line old-record-id-FhIidBVVkoo1ICxIkXgcFM6tnrh">指标库平台聚焦于指标口径和数据模型的构建。给予每个指标一个精确且唯一的定义，通过指标库可以对各个业务领域的指标数据进行快速且规范的查询，开发和使用。通过指标在业务域内唯一的性质，能够解决指标重复定义，重复开发的问题</div>
+    <div class="ace-line ace-line old-record-id-FhIidBVVkoo1ICxIkXgcFM6tnrh">&nbsp;</div>
+    <h1 class="heading-1 ace-line old-record-id-MA7ddYPaXoto4px8MVIcCN3Hn8g">一、开发流程：</h1>
+    <div class="image-uploaded gallery old-record-id-MYt6dedevoXpJTxcIW3cKl2YnRe" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;46253344-c07c-458d-8494-2bec04c7aa5b&quot;,&quot;height&quot;:934,&quot;width&quot;:2548,&quot;currHeight&quot;:934,&quot;currWidth&quot;:2548,&quot;natrualHeight&quot;:934,&quot;natrualWidth&quot;:2548,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FBTRVbdfd6ovGRQxpGhhcRwhdn2g%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;BTRVbdfd6ovGRQxpGhhcRwhdn2g&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:148122,&quot;comments&quot;:[]}]}"><img src="image/development_process.jpg" data-single-block="true" data-width="2548" data-height="934" /></div>
+    <ol class="list-number1" start="1">
+        <li class="ace-line ace-line old-record-id-ItTWdsOFeoXdbEx5Im3cFx7un8c" data-list="number">
+            <div>业务方提出需求，数分同学提供口径</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-ZJKodwlUMor4lixe0QKcWFrxnyd" data-list="number">
+            <div>数开同学确定各指标业务域，进行指标拆分</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-ZxX8dtEaqoz6H6xD2p0cEmhAnje" data-list="number">
+            <div>数开同学配置指标，进行指标落库落表处理</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-GC6ZdcPjMoyZT4x8gcnchegFnnB" data-list="number">
+            <div>数分同学根据所需推送报表格式配置机器人推送至测试群，进行指标验收</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-OrqmdRxyJoCkakxKu7icFDPKnlb" data-list="number">验收完成将机器人配置切换正式，完成上线<br /><br /></li>
+    </ol>
+    <h1 class="heading-1 ace-line old-record-id-BctAdnamAoMx0gxJHcFcaFHjn7g">二、系统模块</h1>
+    <h2 class="heading-2">HT指标管理</h2>
+    <ol class="ace-line ace-line old-record-id-B1USdUGh6o0BTSxwyMwc3rAgnGe" start="1">
+        <li data-list="number">
+            <h3 class="heading-3">数据域</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-CJPjdO1EEoq4gKxkbJhcfEHznZe" data-list="bullet">
+            <div><strong>定义：</strong>业务活动领域的抽象，eg：直播语聊 、社区风控 ；</div>
+            <div class="zoneType-calloutBlock old-record-id-BBG1dAe5RoCZzLxiSizcvqvanlh">
+                <div class="callout-container" data-emoji-id="heart">
+                    <div class="callout-block">
+                        <div class="ace-line ace-line old-record-id-VG2WdzAl0ouBmCxwSSYcfwp5nvg">按照不同的app进行划分第一层级，不同的业务划分第二层级</div>
+                        <div class="ace-line ace-line old-record-id-WOgadLtSHoAfmVxeXrzcTvvFn7f">
+                            <div>eg：hellotalk，gc为第一层级, ht_payment，gc_payment为第二层级</div>
+                            <div>
+                                <div class="ace-line ace-line old-record-id-Jw81dAVsqodaxQx2T34ckXAsnjd">&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="ace-line ace-line old-record-id-XOupd8HIpoowX5x7L2nciYQHnUb" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <div class="image-uploaded gallery old-record-id-D2BrdtDcaomzOlxbwhbc00P8nYc" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;d2f45c83-d488-49a6-ac70-6fee2a5558d6&quot;,&quot;height&quot;:322,&quot;width&quot;:1185,&quot;currHeight&quot;:322,&quot;currWidth&quot;:1185,&quot;natrualHeight&quot;:322,&quot;natrualWidth&quot;:1185,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FW0JmbnBoroDZNHxcXDmcQN3Bnnd%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;W0JmbnBoroDZNHxcXDmcQN3Bnnd&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:26593,&quot;comments&quot;:[]}]}"><img src="image/domain_conf.jpg" data-width="1185" data-height="322" /></div>
+            <div class="zoneType-calloutBlock old-record-id-IrrOdL3Heoi7Dsxhk8McK9D8n6f">
+                <div class="callout-container" data-emoji-id="heart">
+                    <div class="callout-block">
+                        <div class="ace-line ace-line old-record-id-Au7mdszzLoSPg4xag6Dc7GPJnYc">落库表名定义：day/week/month_xxxx(数据域名)_metric，key-value 的形式</div>
+                        <div class="ace-line ace-line old-record-id-DMyhdBhRPoU9t8xohhrcAGQOnHd">eg：按天计算语聊指标 day_ht_voiceroom_metrics</div>
+                        <div class="ace-line ace-line old-record-id-DMyhdBhRPoU9t8xohhrcAGQOnHd">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <ol class="ace-line ace-line old-record-id-DV9ZdClW8oRkX4xyF17cq394nVc" start="2">
+        <li data-list="number">
+            <h3 class="heading-3">修饰词字典</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-VooDdq8EhomCoUxVWgPcftstnvb" data-list="bullet">
+            <div><strong>定义：</strong>维度下的一个或某些值，eg：性别维度下男，女就是性别的两种修饰词，可简单理解为where条件</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-J3FAdyq79oXrIGxbkljc07oMnsf" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <div class="image-uploaded gallery old-record-id-Ivvmddt9vopRYFxp3UlctgSqnzb" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;577ffe9e-76f6-467c-8ddb-723e9f48e8e5&quot;,&quot;height&quot;:570,&quot;width&quot;:1164,&quot;currHeight&quot;:570,&quot;currWidth&quot;:1164,&quot;natrualHeight&quot;:570,&quot;natrualWidth&quot;:1164,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FJnGhbof0ZoaL3axPJ2Rc1gRxnbb%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;JnGhbof0ZoaL3axPJ2Rc1gRxnbb&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:46456,&quot;comments&quot;:[]}]}"><img src="image/modifier_conf.jpg" data-width="1164" data-height="570" /></div>
+            <div class="zoneType-calloutBlock old-record-id-J2gIdfDYToPhJWxgKQOc0QJSnAj">
+                <div class="callout-container" data-emoji-id="soccer">
+                    <div class="callout-block">
+                        <div class="ace-line ace-line old-record-id-U4EQdb0sfoisWPxedircRaxanOU">修饰的指标：指定该修饰词修饰的原子指标</div>
+                        <div class="ace-line ace-line old-record-id-U4EQdb0sfoisWPxedircRaxanOU">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <ol class="ace-line ace-line old-record-id-D7a1d3uuNo38OTxqM5pc8chinRn" start="3">
+        <li data-list="number">
+            <h3 class="heading-3">统计周期</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-PCGkdOnO7ow7cCxBFO3csl4unCd" data-list="bullet">
+            <div><strong>定义：</strong>指标所需的统计时间范围</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-NWZqdekP5ouhl4xjJJ4cRdI0nq9" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <div class="ace-line ace-line old-record-id-TJt7dwz5zodbodxwxAhcgqTDnVc">&nbsp;&nbsp;eg：前一天</div>
+            <div class="image-uploaded gallery old-record-id-K9uQdFNzioevu1x2hXbckQH8n8e" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;0bc8f0a9-3c62-418a-8635-8f9dc219a490&quot;,&quot;height&quot;:784,&quot;width&quot;:1087,&quot;currHeight&quot;:784,&quot;currWidth&quot;:1087,&quot;natrualHeight&quot;:784,&quot;natrualWidth&quot;:1087,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FSI0NbZzEjozipkx1bwacs9KXnLb%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;SI0NbZzEjozipkx1bwacs9KXnLb&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:48767,&quot;comments&quot;:[]}]}"><img src="image/statperiod_conf.jpg" data-width="1087" data-height="784" /></div>
+        </li>
+    </ul>
+    <ol class="ace-line ace-line old-record-id-ZOY2dnntWoETs5xak0kcGFsJnFf" start="4">
+        <li data-list="number">
+            <h3 class="heading-3">原子指标</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-T3RDdXp42oOaqIxcUMTctdnVnCF" data-list="bullet">
+            <div><strong>定义：</strong>通过单模型即可计算得出的指标，是业务域种不可再分的指标。比如语聊 业务过程中的 &ldquo;语聊观看时长&rdquo; 数据来源 VoiceRoomDuration表，通过sum("#duration" ) 得到所需指标</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-FyKBddKrhoA1YMxxui7cvtQvnRd" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <div class="image-uploaded gallery old-record-id-H8RYdgrzAoeU4LxPsvNcvYuPn1d" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;a34a7589-9a01-4999-9fb9-3b91db968729&quot;,&quot;height&quot;:689,&quot;width&quot;:1156,&quot;currHeight&quot;:689,&quot;currWidth&quot;:1156,&quot;natrualHeight&quot;:689,&quot;natrualWidth&quot;:1156,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FGKIbbEIrmoh0tLxxGMYc30Mrnwe%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;GKIbbEIrmoh0tLxxGMYc30Mrnwe&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:83691,&quot;comments&quot;:[]}]}"><img src="image/atom_conf.jpg" data-width="1156" data-height="689" /></div>
+            <div class="ace-line ace-line old-record-id-MP4ZdKa8JoTHD4x6xGocXYymnhc">&nbsp;</div>
+            <div class="zoneType-calloutBlock old-record-id-SASxdp1ARo9pGmxKzJ6cue13ngg">
+                <div class="callout-container" data-emoji-id="bulb">
+                    <div class="callout-block">
+                        <div class="ace-line ace-line old-record-id-Nv4hdzIvgoeFS7xzkmxcpoqAnXe"><strong>项目名/库名：</strong>项目名/库名可不填，当为空时：数据源为TA，默认v_event_12， 数据源为doris，默认dw_ht_data</div>
+                        <div class="ace-line ace-line old-record-id-Nv4hdzIvgoeFS7xzkmxcpoqAnXe">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <ol class="ace-line ace-line old-record-id-OuzQd9iY2ombvSxwregcBD0lnJd" start="5">
+        <li data-list="number">
+            <h3 class="heading-3">派生指标</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-NzWLdUcnposjhixl8IgcPGkgnkd" data-list="bullet">
+            <div><strong>定义：</strong>派生指标 = 原子指标 + 修饰词 + 统计周期; eg: 近7天的appstore上vip订单金额。 Appstore 是修饰词， 近7天是统计周期，订单支付金额是原子指标。派生指标是业务方真正关心的指标，也是可以实际查询取数的指标</div>
+            <div>自动生成：</div>
+            <div class="image-uploaded gallery old-record-id-ChHndPgp6oIJuTx9oiWc82vGnPb" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;95f7569c-a189-46a1-a858-11ce18941e70&quot;,&quot;height&quot;:796,&quot;width&quot;:1171,&quot;currHeight&quot;:796,&quot;currWidth&quot;:1171,&quot;natrualHeight&quot;:796,&quot;natrualWidth&quot;:1171,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FLLLEbC3X7oQrDOxAIJIc7i6ynHg%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;LLLEbC3X7oQrDOxAIJIc7i6ynHg&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:154104,&quot;comments&quot;:[]}]}"><img src="image/derive_conf.jpg" data-width="1171" data-height="796" /></div>
+            <div>非自动生成：</div>
+            <div class="image-uploaded gallery old-record-id-ChHndPgp6oIJuTx9oiWc82vGnPb" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;95f7569c-a189-46a1-a858-11ce18941e70&quot;,&quot;height&quot;:796,&quot;width&quot;:1171,&quot;currHeight&quot;:796,&quot;currWidth&quot;:1171,&quot;natrualHeight&quot;:796,&quot;natrualWidth&quot;:1171,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FLLLEbC3X7oQrDOxAIJIc7i6ynHg%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;LLLEbC3X7oQrDOxAIJIc7i6ynHg&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:154104,&quot;comments&quot;:[]}]}"><img src="image/derive_conf2.jpg" data-width="1171" data-height="796" /></div>
+        </li>
+        <li class="ace-line ace-line old-record-id-V6kud1izVoNVCNxaAoVcIzr9nWb" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <ul class="list-bullet">
+                <ul class="list-bullet2" style="list-style-type: square;">
+                    <li class="ace-line ace-line old-record-id-ScnCdpoxMo8nISxSZ17cMdDxnoe" data-list="bullet">
+                        <div style="text-align: left;">计算周期：该指标的计算周期，如day，week，month，hour</div>
+                    </li>
+                    <li class="ace-line ace-line old-record-id-K5Pzdknwvo11A3xedrdcfrK2nWb" style="text-align: left;" data-list="bullet">
+                        <div>状态：开启后，将会在每个计算周期进行该指标的计算</div>
+                    </li>
+                    <li class="ace-line ace-line old-record-id-NcRddDFWCo5cJExxKnMcf96Pnkg" style="text-align: left;" data-list="bullet">
+                        <div>自动生成：可根据配置自动生成技术定义（group by、join操作无法自动生成），无法自动生成时选择否，直接填写技术定义</div>
+                    </li>
+                    <li style="text-align: left;">业务定义：业务方对该指标的定义</li>
+                    <li class="ace-line ace-line old-record-id-JBU6deLAVoNOWgxAyV0cnllinNd" style="text-align: left;" data-list="bullet">
+                        <div>上游指标：选择所需的上游原子指标</div>
+                    </li>
+                    <li class="ace-line ace-line old-record-id-NcRddDFWCo5cJExxKnMcf96Pnkg" style="text-align: left;" data-list="bullet">
+                        <div>统计周期：该指标的统计时间范围</div>
+                    </li>
+                    <li class="ace-line ace-line old-record-id-OmW8ddkmdosTNaxJ9I8chS0Wnae" style="text-align: left;" data-list="bullet">
+                        <div>修饰词描述：选择修饰词，可以通过查看上游原子指标与修饰词是否有一对一关系：</div>
+                    </li>
+                </ul>
+            </ul>
+            <div class="ace-line text-indent ace-line old-record-id-COZgdx8PaoIeGGxcUTzcLmagngc" style="text-align: left;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 如果没有，需在修饰词配置中添加修饰的原子指标，否则后续该指标配置页面将报错</div>
+        </li>
+    </ul>
+    <div class="zoneType-calloutBlock old-record-id-T33jdLFKDo9WG8x1roVc4zwBnvd">
+        <div class="callout-container" data-emoji-id="pushpin">
+            <div class="callout-block">
+                <blockquote>
+                    <div class="ace-line ace-line old-record-id-JWM0do1Z6oldZlxf0dMcHUKdnye">目前仅支持单表自动生成</div>
+                    <ol class="list-number1" start="1">
+                        <li class="ace-line ace-line old-record-id-KRrqdeRdMo26fex2im8cyMOcn6d" data-list="number">
+                            <div>多表关联，可尝试将关联换为子查询</div>
+                        </li>
+                        <li class="ace-line ace-line old-record-id-Cb4Kd0CTJoaHgLxZ14kcRvkHnUh" data-list="number">
+                            <div>如遇更复杂的sql逻辑，如group by ，having等，可直接填写sql</div>
+                        </li>
+                    </ol>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <ol class="ace-line ace-line old-record-id-D2dnd9HKhogUhYxF5OBcFhirnTc" start="6">
+        <li data-list="number">
+            <h3 class="heading-3">复合指标</h3>
+        </li>
+    </ol>
+    <ul class="list-bullet1">
+        <li class="ace-line ace-line old-record-id-B3wpdVLEDoV3pFxa6kDcgHqanbh" data-list="bullet">
+            <div><strong>定义：</strong>通过派生指标之间的四则运算所得,eg：留存率，人均时长</div>
+        </li>
+        <li class="ace-line ace-line old-record-id-LoZedLmyhoM5xYxADL8cROxpnzf" data-list="bullet">
+            <div><strong>配置：</strong><br /><img src="image/composite_conf.jpg" data-width="1157" data-height="711" /></div>
+        </li>
+    </ul>
+</div>
+<blockquote>
+    <p>在每日派生指标统计完成后，根据技术定义计算复合指标</p>
+</blockquote>
+<div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="true">
+    <div class="zoneType-calloutBlock old-record-id-AOQrdWLqYoRl63xzOlPcIPrznfd">
+        <div class="callout-container" data-emoji-id="bulb">
+            <div class="callout-block">
+                <div class="ace-line ace-line old-record-id-HJqvdCNfIolNhzxpMO4cIipdnZf">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+    <h2 class="heading-2">机器人推送管理</h2>
+    <div>
+        <div class="zoneType-calloutBlock old-record-id-DBGidO4fUoLmHyx3CRacAeK2ncf">
+            <div class="callout-container" data-emoji-id="pushpin">
+                <div class="callout-block">
+                    <ul>
+                        <li class="ace-line ace-line old-record-id-JRFydb4GTole2qxSDgKcUzjhnRe">当指标计算没有完成时，报表将推送失败<br />报表推送脚本十分钟跑一次，目前推送失败最大容忍时间为1H<br />
+                            <div class="ace-line ace-line old-record-id-CQyBdskrWo9gpwxZtuwc6PiOnHb">如需测试：点击手动推送按钮，无任何限制，点击后即可推送，推送后将更新报表最近推送时间，</div>
+                            <div class="ace-line text-indent ace-line old-record-id-AAQ3dDt24opDxGxiu5HcRdkEn2e">多选推送：勾选所需推送报表，点击顶部按钮<br /><img src="image/robot_home.jpg" data-width="2290" data-height="1127" /></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="ace-line text-indent ace-line old-record-id-AAQ3dDt24opDxGxiu5HcRdkEn2e">&nbsp;</div>
+    </div>
+    <ul class="list-bullet">
+        <li class="ace-line ace-line old-record-id-Bc7tdEbXHoIq1wxBU36ctShencW" data-list="bullet">
+            <div><strong>配置：</strong></div>
+            <div class="image-uploaded gallery old-record-id-H84GdkLVXoNr2gx0NQQclHRjnUc" data-type="image" data-ace-gallery-json="{&quot;items&quot;:[{&quot;uuid&quot;:&quot;5dc4b7d6-85aa-49fe-93b3-a21f2ba1c87c&quot;,&quot;height&quot;:861,&quot;width&quot;:1029,&quot;currHeight&quot;:861,&quot;currWidth&quot;:1029,&quot;natrualHeight&quot;:861,&quot;natrualWidth&quot;:1029,&quot;pluginName&quot;:&quot;imageUpload&quot;,&quot;scale&quot;:1,&quot;src&quot;:&quot;https%3A%2F%2Finternal-api-drive-stream.feishu.cn%2Fspace%2Fapi%2Fbox%2Fstream%2Fdownload%2Fpreview%2FTaVVbe7NPoZdYqx1edAc7eyxnbb%2F%3Fpreview_type%3D16&quot;,&quot;file_token&quot;:&quot;TaVVbe7NPoZdYqx1edAc7eyxnbb&quot;,&quot;image_type&quot;:&quot;image/png&quot;,&quot;size&quot;:130901,&quot;comments&quot;:[]}]}"><img src="image/robot_conf.jpg" data-width="1029" data-height="861" /></div>
+            <ul class="list-bullet2" style="list-style-type: square;">
+                <li class="ace-line ace-line old-record-id-NhH2dzPowofEeKxYwCcciy21nsf" data-list="bullet">
+                    <div>推送周期：推送的频率</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-PdIkdqNgWo5Y1OxNirgcAT6UnXd" data-list="bullet">
+                    <div>推送时间 = 推送小时：推送分钟，如示例，即每天09：00 推送该指标</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-PAnXdIUaRomNgkx8nVdc53Gynog" data-list="bullet">
+                    <div>机器人token：所需推送机器人的token</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-Fi6bdVbneowU8UxQHWIcJe90nsd" data-list="bullet">
+                    <div>报表url：该报表的看板链接</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-YQwRdckQJomJYAxSy35c6Erpn4W" data-list="bullet">
+                    <div>推送优先级：同个token，推送时间下有多个推送任务时，优先级高的先执行</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-Y112ducAToqE5IxH5E0cDbUlnDf" data-list="bullet">
+                    <div>推送指标：根据顺序依次筛选需要推送的指标，增加或删除指标时保存后推送配置会同步更新</div>
+                </li>
+                <li class="ace-line ace-line old-record-id-GZtVdQzNmoSeFYxFtDbcjEtDnHb" data-list="bullet">
+                    <div><span style="color: #e03e2d;">推送配置：不填写可根据筛选的推送指标生成默认配置。id:指标id,数组内顺序为推送顺序；precision:小数点位数；compare:1(环比昨日),2(环比上月) ;format:1(该指标需换行),2(该指标需空一行),3(该指标不换行，并用,连接) 示例：[{"id": 1, "precision": 0, "compare": 2,"format": 1}, {"id": 2, "precision": 2,"compare": 1,"format": 2}]</span></div>
+                </li>
+                <li class="ace-line ace-line old-record-id-N5LKd9AhVobzPNxpzw3c6LtwnRd" data-list="bullet">
+                    <div>报表最近推送时间：报表成功推送后将刷新</div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <h1 class="heading-1 ace-line old-record-id-UAzQd4fqwovj5FxSoUacOfNMnzc">附注：名词解释</h1>
+    <div class="ace-line ace-line old-record-id-RWoadnKHUo9AqsxdsfRc4mKCnXd">
+        <table style="border-collapse: collapse; width: 65.1055%; height: 219px;" border="1">
+            <tbody>
+            <tr style="height: 33px;">
+                <td style="width: 15.7791%; height: 33px;"><strong>名词术语</strong></td>
+                <td style="width: 55.5271%; height: 33px;"><strong>解释</strong></td>
+            </tr>
+            <tr style="height: 22px;">
+                <td style="width: 15.7791%; height: 22px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-BcCJdiWcgow5f3xq5OfcgxjCn1f">维度</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 22px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-XjO0dsaCtoOEbJxgjW0cSodBn1f">观察数据的角度，例如时间、地区、客户端类型等</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 26px;">
+                <td style="width: 15.7791%; height: 26px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-PYzvdl0x8oRYCGxfPT8cYcvInBf">数据域</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 26px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-QhD6digLgoW9qBx2IvRcYbmRndg">直播语聊 、社区风控 ；业务活动领域的抽象</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 44px;">
+                <td style="width: 15.7791%; height: 10px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-KVQFdWFweoCITFx5C2ocCTHPnAe">修饰词</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 10px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-Ay7ZdngBBoO0c6x39uUcRcEynVv">维度的一个或者某些值,eg: 性别维度下男,女就是性别的两种修饰词，可简单理解为where条件</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 25px;">
+                <td style="width: 15.7791%; height: 25px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-KRrld0xvao4CwQxK4JJcH5sdnEf">统计周期</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 25px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-RJbUd6PYnobAvnxo8JQcDvRgnkb">统计数据的时间范围</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 22px;">
+                <td style="width: 15.7791%; height: 22px;">原子指标</td>
+                <td style="width: 55.5271%; height: 22px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-ZLc3dxS7AoXX4DxunZkcgSgDnrg">通过单模型即可计算得出的指标，是业务域种不可再分的指标。比如支付订单 业务过程中的 &ldquo;支付金额&rdquo;</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 22px;">
+                <td style="width: 15.7791%; height: 22px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-JCxCdGlK9o9n6TxKPeFcfUcxnhc">派生指标</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 22px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-A64BdvXxGotLzrx1nYCc9frSnSw">派生指标= 原子指标+修饰词 +统计周期; eg: 近7天的appstore上vip订单金额。 Appstore 是修饰词， 近7天是统计周期，订单支付金额是原子指标。派生指标是业务方真正关心的指标，也是可以实际查询取数的指标</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 27px;">
+                <td style="width: 15.7791%; height: 29px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-GBB8dTq3poYauVxzecUcCSysnLd">复合指标</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 29px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-IFMsdi9BToDzTzx0ZAYcLpBHnOg">派生指标之间的四则运算</div>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 24px;">
+                <td style="width: 15.7791%; height: 30px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-WW9Zds9XGoNgL3xgoYgcYXo4nwb">事实表</div>
+                    </div>
+                </td>
+                <td style="width: 55.5271%; height: 30px;">
+                    <div data-page-id="TmzzdJptboVXsox82EycUhEMnXe" data-docx-has-block-data="false">
+                        <div class="ace-line ace-line old-record-id-FwoZd48yfovrK3xR90Gc8Af6n9f">主要包含指标的表</div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p>&nbsp;</p>
+    </div>
+</div>
 </body>
 </html>
