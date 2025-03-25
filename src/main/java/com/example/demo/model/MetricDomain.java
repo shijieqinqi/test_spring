@@ -9,6 +9,7 @@ import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
+import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.ChoiceType;
 import xyz.erupt.annotation.sub_field.sub_edit.InputType;
 import xyz.erupt.annotation.sub_field.sub_edit.Search;
@@ -17,6 +18,7 @@ import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Erupt(name = "数据域管理",dataProxy = BaseDataProxy.class)
 @Table(name = "metric_domain")
@@ -76,5 +78,11 @@ public class MetricDomain extends MetaBase {
     )
     private Integer parent_id;
 
+    @EruptField(
+            views = @View(
+                    title = "创建时间", type = ViewType.DATE_TIME
+            )
+    )
+    private final Date create_time = new Date();
 }
     

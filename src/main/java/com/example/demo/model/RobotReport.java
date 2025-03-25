@@ -126,6 +126,18 @@ public class RobotReport extends MetaBase {
 
     @EruptField(
             views = @View(
+                    title = "推送样式"
+            ),
+            edit = @Edit(
+                    title = "推送样式",
+                    type = EditType.CHOICE, notNull = true,
+                    choiceType = @ChoiceType(vl = {@VL(value = "1", label = "卡片"), @VL(value = "2", label = "文本")})
+            )
+
+    )
+    private Integer push_style;
+    @EruptField(
+            views = @View(
                     title = "推送优先级",desc = "当同token同推送时间下有多个推送任务时，优先级高的会先执行"
             ),
             edit = @Edit(
@@ -154,7 +166,7 @@ public class RobotReport extends MetaBase {
                     title = "推送配置",show = false
             ),
             edit = @Edit(
-                    title = "推送配置",desc = "id:指标id,数组内顺序为推送顺序,换行id为-1；precision:小数点位数；compare:1(环比昨日),2(环比上月)  示例：[{\"id\": 1, \"precision\": 0, \"compare\": 2}, {\"id\": 2, \"precision\": 2,\"compare\": 1}]",
+                    title = "推送配置",desc = "id:指标id,数组内顺序为推送顺序；precision:小数点位数；compare:1(环比昨日),2(环比上月) ;format:1(该指标需换行),2(该指标需空一行),3(该指标不换行，并用,连接) 示例：[{\"id\": 1, \"precision\": 0, \"compare\": 2,\"format\": 1}, {\"id\": 2, \"precision\": 2,\"compare\": 1,\"format\": 2}]",
                     type = EditType.CODE_EDITOR,
                     codeEditType = @CodeEditorType(language = "json")
             )

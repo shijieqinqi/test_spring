@@ -11,6 +11,7 @@ import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
+import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.CodeEditorType;
 import xyz.erupt.annotation.sub_field.sub_edit.InputType;
 import xyz.erupt.annotation.sub_field.sub_edit.Search;
@@ -20,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Date;
 
 @Data
 @Erupt(name = "修饰词字典",dataProxy = ModifierDataProxy.class)
@@ -96,5 +98,12 @@ public class MetricModifiers extends MetaBase {
             )
     )
     private @Lob String tec_def;
+
+    @EruptField(
+            views = @View(
+                    title = "创建时间", type = ViewType.DATE_TIME
+            )
+    )
+    private final Date create_time = new Date();
 }
     

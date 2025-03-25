@@ -9,12 +9,14 @@ import xyz.erupt.annotation.sub_erupt.RowOperation;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
+import xyz.erupt.annotation.sub_field.ViewType;
 import xyz.erupt.annotation.sub_field.sub_edit.*;
 import xyz.erupt.toolkit.handler.SqlChoiceFetchHandler;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Erupt(name = "原子指标",
         filter = @Filter("MetricMetaAtom.metric_type = 1"),
@@ -141,5 +143,11 @@ public class MetricMetaAtom extends MetaBase {
     )
     private @Lob String product_def;
 
+    @EruptField(
+            views = @View(
+                    title = "创建时间", type = ViewType.DATE_TIME
+            )
+    )
+    private final Date create_time = new Date();
 
 }

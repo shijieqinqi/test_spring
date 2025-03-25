@@ -37,6 +37,8 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
                     .map(part -> part.split(":")[0])
                     .toArray(String[]::new);
             metric.setModifier_def(StringUtils.join(idArr, ","));
+        } else {
+            metric.setModifier_def(null);
         }
         String tecDef = metric.getTec_def();
 

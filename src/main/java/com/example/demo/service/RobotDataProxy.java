@@ -44,7 +44,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
         if (StringUtils.isBlank(pushConf)) {
             ArrayList<JSONObject> pushConfResult = new ArrayList<>();
             for (String id : metricIdOrder) {
-                pushConfResult.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1}", id)));
+                pushConfResult.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1,\"format\":1}", id)));
             }
             metric.setPush_conf(pushConfResult.toString().replace("}, {", "}\n,{").replace("[", "[\n ").replace("]", "\n]"));
         } else {
@@ -57,7 +57,7 @@ public class RobotDataProxy implements DataProxy<RobotReport> {
             }
             ids.removeAll(confIdList);
             for (String id : ids) {
-                confList.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1}", id)));
+                confList.add(JSONObject.parseObject(String.format("{\"id\": %s, \"precision\": 0, \"compare\": 1,\"format\":1}", id)));
             }
             metric.setPush_conf(confList.toString().replace("}, {", "}\n,{").replace("[", "[\n ").replace("]", "\n]"));
         }

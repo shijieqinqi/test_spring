@@ -198,5 +198,10 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Date recent_cal_time;
 
-
+    @EruptField(
+            views = @View(
+                    title = "创建时间", type = ViewType.DATE_TIME
+            )
+    )
+    private final Date create_time = new Date();
 }

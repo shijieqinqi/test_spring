@@ -2,6 +2,7 @@ package com.example.demo.model;/*
  * Copyright © 2020-2035 erupt.xyz All rights reserved.
  * Author: YuePeng (erupts@126.com)
  */
+
 import com.example.demo.service.CompositeDataProxy;
 import com.example.demo.service.CompositeTagsFetchHandler;
 import lombok.Data;
@@ -157,4 +158,11 @@ public class MetricMetaComposite extends MetaBase {
             )
     )
     private Date recent_cal_time ;
+
+    @EruptField(
+            views = @View(
+                    title = "创建时间", type = ViewType.DATE_TIME
+            )
+    )
+    private final Date create_time = new Date();
 }
