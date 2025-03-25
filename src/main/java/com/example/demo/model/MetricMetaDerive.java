@@ -106,11 +106,27 @@ public class MetricMetaDerive extends MetaBase {
     )
     private Boolean status;
 
+
+    @EruptField(
+            views = @View(
+                    title = "自动生成"
+            ),
+            edit = @Edit(
+                    title = "自动生成",
+                    type = EditType.BOOLEAN, notNull = true,
+                    desc = "关联与group by聚合不可自动生成",
+                    boolType = @BoolType
+            )
+    )
+    private Boolean is_autogenerate;
+
     @Transient
     @EruptField(
-            edit = @Edit(title = "表配置", type = EditType.DIVIDE)
+            edit = @Edit(title = "表配置",
+                    type = EditType.DIVIDE,
+                    showBy = @ShowBy(dependField = "is_autogenerate", expr = "value == 1"))
     )
-    private String divide;
+    private String table_conf;
 
     @EruptField(
             views = @View(
@@ -118,11 +134,12 @@ public class MetricMetaDerive extends MetaBase {
             ),
             edit = @Edit(
                     title = "上游指标",
-                    type = EditType.CHOICE, search = @Search,notNull = true,
+                    type = EditType.CHOICE, search = @Search,notNull = false,
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,metric_zh_name from metric_meta where metric_type = 1"
-                    )
+                    ),
+                    showBy = @ShowBy(dependField = "is_autogenerate", expr = "value == 1")
             )
     )
     private Integer upstream_metric;
@@ -137,7 +154,8 @@ public class MetricMetaDerive extends MetaBase {
                     choiceType = @ChoiceType(
                             fetchHandler = SqlChoiceFetchHandler.class,
                             fetchHandlerParams = "select id,stat_period_zh_name from metric_stat_period"
-                    )
+                    ),
+                    showBy = @ShowBy(dependField = "is_autogenerate", expr = "value == 1")
             )
     )
     private Integer stat_period;
@@ -161,10 +179,20 @@ public class MetricMetaDerive extends MetaBase {
             views = @View(title = "修饰词描述", desc = "格式(id:修饰名)"),
             edit = @Edit(title = "修饰词描述", desc = "格式(id:修饰名:所属原子指标名)",
                     type = EditType.TAGS,
-                    tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false))
+                    tagsType = @TagsType(fetchHandler = DeriveModifierTagsFetchHandler.class, allowExtension = false),
+                    showBy = @ShowBy(dependField = "is_autogenerate", expr = "value == 1"))
     )
     @Transient
     private String modifier_def_view;
+
+    @Transient
+    @EruptField(
+            edit = @Edit(title = "指标定义",
+                    type = EditType.DIVIDE
+            )
+    )
+    private String metric_def;
+
 
     @EruptField(
             views = @View(

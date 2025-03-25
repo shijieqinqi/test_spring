@@ -3,12 +3,12 @@ package com.example.demo.model;/*
  * Author: YuePeng (erupts@126.com)
  */
 
-import com.example.demo.service.CompositeDataProxy;
-import com.example.demo.service.CompositeTagsFetchHandler;
+import com.example.demo.service.*;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
 import xyz.erupt.annotation.sub_erupt.Filter;
+import xyz.erupt.annotation.sub_erupt.RowOperation;
 import xyz.erupt.annotation.sub_field.Edit;
 import xyz.erupt.annotation.sub_field.EditType;
 import xyz.erupt.annotation.sub_field.View;
@@ -24,8 +24,14 @@ import java.util.Date;
 
 @Data
 @Erupt(name = "复合指标",
-        filter = @Filter("MetricMetaComposite.metric_type = 3")
-        ,dataProxy = CompositeDataProxy.class)
+        filter = @Filter("MetricMetaComposite.metric_type = 3"),
+        rowOperation = {
+                @RowOperation(
+                        title = "复制",
+                        icon = "fa fa-clone",
+                        mode = RowOperation.Mode.SINGLE,
+                        operationHandler = CompositeDeriveDataCopyHandlerImpl.class)},
+        dataProxy = CompositeDataProxy.class)
 @Table(name = "metric_meta")
 @Entity
 public class MetricMetaComposite extends MetaBase {

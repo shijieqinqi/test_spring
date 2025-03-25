@@ -41,8 +41,15 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
             metric.setModifier_def(null);
         }
         String tecDef = metric.getTec_def();
+        Boolean isAutogenerate = metric.getIs_autogenerate();
 
-        if (StringUtils.isBlank(tecDef)) {
+        if(!isAutogenerate){
+            metric.setModifier_def("");
+            metric.setUpstream_metric(0);
+            metric.setStat_period(0);
+        }
+
+        if (StringUtils.isBlank(tecDef)&&isAutogenerate) {
             // 派生指标生成sql
             Integer upstreamMetricId = metric.getUpstream_metric();
             String metricName        = metric.getMetric_name();
@@ -142,9 +149,11 @@ public class DeriveDataProxy implements DataProxy<MetricMetaDerive> {
 
     @Override
     public void editBehavior(MetricMetaDerive metric) {
-        String modifierDef = metric.getModifier_def();
-        Integer upstreamMetric = metric.getUpstream_metric();
-        metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric, true));
+        if (metric.getIs_autogenerate()){
+            String modifierDef = metric.getModifier_def();
+            Integer upstreamMetric = metric.getUpstream_metric();
+            metric.setModifier_def_view(getModifierView(modifierDef, upstreamMetric, true));
+        }
     }
 
     @Override

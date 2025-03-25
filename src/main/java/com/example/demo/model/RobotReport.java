@@ -1,9 +1,7 @@
 package com.example.demo.model;
 
 
-import com.example.demo.service.PushRobotHandlerImpl;
-import com.example.demo.service.RobotDataProxy;
-import com.example.demo.service.RobotMetricTagsFetchHandler;
+import com.example.demo.service.*;
 import lombok.Data;
 import xyz.erupt.annotation.Erupt;
 import xyz.erupt.annotation.EruptField;
@@ -23,10 +21,16 @@ import java.util.Date;
 @Erupt(name = "机器人推送配置",
         rowOperation = {
                 @RowOperation(
+                        title = "复制",
+                        icon = "fa fa-clone",
+                        mode = RowOperation.Mode.SINGLE,
+                        operationHandler = RobotDeriveDataCopyHandlerImpl.class),
+                @RowOperation(
                         title = "手动推送",
                         icon = "fa fa-hand-pointer-o",
                         mode = RowOperation.Mode.MULTI,
-                        operationHandler = PushRobotHandlerImpl.class)},
+                        operationHandler = PushRobotHandlerImpl.class)
+},
         dataProxy = RobotDataProxy.class)
 @Table(name = "robot_report_meta")
 @Entity
